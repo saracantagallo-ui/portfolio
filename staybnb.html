@@ -552,9 +552,7 @@
       .contact{margin:0 10px;border-radius:34px 34px 0 0;}
       .contact h2{font-size:2.4rem;}
       .proto img{height:280px;}
-      /* hide “click to zoom” pill in prototypes for mobile */
       #prototypes .section-head .pill{display:none;}
-      /* mobile h2 sizing */
       h2,.section-head h2,.contact h2{font-size:38px;letter-spacing:-.5px;}
     }
 
@@ -583,7 +581,6 @@
         <i data-lucide="menu"></i>
       </button>
 
-      <!-- Adjust this to your real home -->
       <a class="back-home" href="index.html">
         <i data-lucide="arrow-left" size="18"></i> BACK HOME
       </a>
@@ -643,12 +640,11 @@
       <!-- HERO IMAGE (click to zoom) -->
       <div class="hero-visual">
         <div class="visual-inner lightbox-trigger"
-             data-lightbox="img/staybnb-home.png"
+             data-lightbox="self"
              data-title="Staybnb · Homepage">
-          <!-- ✅ Replace with your real file path -->
           <img
             class="hero-visual-img"
-            src="img/staybnb-home.png"
+            src="img/Staybnb1.png"
             alt="Staybnb – Homepage preview"
             loading="eager"
           />
@@ -849,13 +845,11 @@
       </p>
 
       <div class="proto-grid">
-        <!-- ✅ Replace src + data-lightbox with your real image paths -->
-        <figure class="proto lightbox-trigger" data-lightbox="img/staybnb-home.png" data-title="Staybnb · Homepage" style="margin:0;">
-          <img src="img/staybnb-home.png" alt="Staybnb – Homepage" />
+        <figure class="proto lightbox-trigger" data-lightbox="self" data-title="Staybnb · Homepage" style="margin:0;">
+          <img src="img/Staybnb1.png" alt="Staybnb – Homepage" />
           <figcaption class="proto-cap">
             <div class="proto-top">
               <span>Homepage</span>
-              <!-- Optional: link to live page -->
               <a class="proto-btn" href="#" onclick="return false;">
                 Live demo <i data-lucide="arrow-up-right"></i>
               </a>
@@ -864,8 +858,8 @@
           </figcaption>
         </figure>
 
-        <figure class="proto lightbox-trigger" data-lightbox="img/staybnb-listing.png" data-title="Staybnb · Listing" style="margin:0;">
-          <img src="img/staybnb-listing.png" alt="Staybnb – Listing page" />
+        <figure class="proto lightbox-trigger" data-lightbox="self" data-title="Staybnb · Listing" style="margin:0;">
+          <img src="img/Staybnb2.png" alt="Staybnb – Listing page" />
           <figcaption class="proto-cap">
             <div class="proto-top">
               <span>Listing</span>
@@ -877,8 +871,8 @@
           </figcaption>
         </figure>
 
-        <figure class="proto lightbox-trigger" data-lightbox="img/staybnb-detail.png" data-title="Staybnb · Hotel detail" style="margin:0;">
-          <img src="img/staybnb-detail.png" alt="Staybnb – Hotel detail page" />
+        <figure class="proto lightbox-trigger" data-lightbox="self" data-title="Staybnb · Hotel detail" style="margin:0;">
+          <img src="img/Staybnb3.png" alt="Staybnb – Hotel detail page" />
           <figcaption class="proto-cap">
             <div class="proto-top">
               <span>Hotel detail</span>
@@ -950,7 +944,8 @@
   </div>
 
   <script>
-    lucide.createIcons();
+    // ✅ Safe lucide init (won't break JS if lucide is blocked)
+    if (window.lucide?.createIcons) window.lucide.createIcons();
 
     // Glass nav on scroll
     window.addEventListener('scroll', () => {
@@ -977,13 +972,13 @@
       if (!navContent) return;
       navContent.classList.add('open');
       navToggle?.setAttribute('aria-expanded','true');
-      lucide.createIcons();
+      if (window.lucide?.createIcons) window.lucide.createIcons();
     }
     function closeMobileMenu(){
       if (!navContent) return;
       navContent.classList.remove('open');
       navToggle?.setAttribute('aria-expanded','false');
-      lucide.createIcons();
+      if (window.lucide?.createIcons) window.lucide.createIcons();
     }
     function toggleMobileMenu(){
       if (!navContent) return;
@@ -1051,6 +1046,7 @@
         const img = resolveImageFromTrigger(trigger);
         const imgSrc = img?.getAttribute('src') || '';
 
+        // ✅ If data-lightbox="self" OR missing, use the image inside the trigger
         if (!val || val === 'self') return imgSrc;
 
         const isJustFilename = !val.includes('/') && !/^(https?:)?\/\//i.test(val);
