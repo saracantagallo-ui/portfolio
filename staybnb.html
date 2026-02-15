@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Staybnb | 3-page Responsive UI (HTML/CSS) — Case Study</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root{
+      --font-display:'Outfit',sans-serif;
+      --font-body:'Inter',sans-serif;
+
+      --color-bg:#F9FAFB;
+      --color-card:#ffffff;
+      --color-text-main:#0f172a;
+      --color-text-muted:#64748b;
+
+      --color-primary:#7c3aed;
+      --color-primary-light:#ede9fe;
+
+      --border:#e2e8f0;
+
+      --radius-lg:32px;
+      --radius-md:24px;
+      --radius-sm:12px;
+
+      --shadow-soft:0 10px 25px rgba(15,23,42,0.08);
+      --shadow-glow:0 25px 50px -12px rgba(124,58,237,0.25);
+
+      --ease-spring:cubic-bezier(0.34, 1.56, 0.64, 1);
+      --ease:cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{
+      font-family:var(--font-body);
+      background:var(--color-bg);
+      color:var(--color-text-main);
+      line-height:1.6;
+      overflow-x:hidden;
+    }
+    h1,h2,h3,h4{font-family:var(--font-display);line-height:1.1;}
+    a{text-decoration:none;color:inherit;}
+    img,svg,video,canvas{max-width:100%;height:auto;display:block;}
+
+    .container{max-width:1200px;margin:0 auto;padding:0 24px;}
+
+    .reveal{opacity:0;transform:translateY(28px);transition:all .85s ease-out;}
+    .reveal.active{opacity:1;transform:translateY(0);}
+
+    .text-gradient{
+      background:linear-gradient(to right,#7c3aed,#db2777);
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+    }
+
+    /* ===== Buttons ===== */
+    .btn{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:14px 22px;border-radius:999px;
+      font-size:0.95rem;font-weight:700;
+      transition:all .3s var(--ease-spring);
+      cursor:pointer;border:none;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .btn-black{background:#000;color:#fff !important;}
+    .btn-outline{background:transparent;border:1px solid var(--border);color:var(--color-text-main);}
+    .btn:hover{
+      background-color:var(--color-primary);
+      color:#fff !important;
+      transform:translateY(-5px);
+      box-shadow:0 12px 24px rgba(124, 58, 237, 0.3);
+    }
+    .btn:active{transform:translateY(-2px);}
+
+    /* ===== Nav (glass) ===== */
+    nav{
+      position:fixed;top:20px;left:0;right:0;
+      z-index:1000;
+      display:flex;justify-content:center;
+      padding:0 12px;
+    }
+    .nav-content{
+      background:rgba(255,255,255,0.3);
+      backdrop-filter:blur(8px);
+      -webkit-backdrop-filter:blur(8px);
+      border:1px solid rgba(255,255,255,0.2);
+      padding:10px 32px;
+      border-radius:999px;
+      display:flex;align-items:center;justify-content:space-between;
+      width:100%;
+      max-width:1000px;
+      transition:all 0.5s ease;
+      position:relative;
+      margin:0 auto;
+    }
+    .nav-content.scrolled{
+      background:rgba(255,255,255,0.7);
+      backdrop-filter:blur(25px) saturate(180%);
+      -webkit-backdrop-filter:blur(25px) saturate(180%);
+      border:1px solid rgba(255,255,255,0.4);
+      transform:translateY(-5px);
+      box-shadow:0 15px 35px rgba(0,0,0,0.08);
+    }
+
+    .back-home{
+      display:flex;align-items:center;gap:8px;
+      color:var(--color-primary) !important;
+      font-weight:800;
+      font-size:0.9rem;
+      transition:transform .3s var(--ease-spring);
+    }
+    .back-home:hover{transform:translateY(-4px);}
+
+    .nav-links{display:flex;gap:28px;align-items:center;}
+    .nav-links a{
+      font-size:0.9rem;font-weight:700;
+      color:#000 !important;
+      position:relative;
+      padding:4px 0;
+      transition:transform .3s var(--ease-spring);
+      display:inline-block;
+    }
+    .nav-links a:hover{transform:translateY(-4px);}
+    .nav-links .btn,.mobile-menu .btn{color:#fff !important;}
+
+    .nav-links a:not(.btn)::after{
+      content:'';
+      position:absolute;width:100%;height:2px;bottom:-2px;left:0;
+      background-color:var(--color-primary);
+      transform:scaleX(0);
+      transform-origin:left;
+      transition:transform .3s ease;
+    }
+    .nav-links a:not(.btn):hover::after{transform:scaleX(1);}
+
+    .nav-toggle{
+      display:none;background:transparent;border:none;cursor:pointer;
+      width:44px;height:44px;align-items:center;justify-content:center;border-radius:10px;
+    }
+    .nav-toggle svg{width:22px;height:22px;color:#000;}
+
+    .mobile-menu{
+      display:none;
+      position:absolute;
+      top:calc(100% + 10px);
+      left:50%;
+      transform:translateX(-50%);
+      width:calc(100vw - 24px);
+      max-width:1000px;
+      background:rgba(255,255,255,0.85);
+      backdrop-filter:blur(10px);
+      -webkit-backdrop-filter:blur(10px);
+      padding:12px;border-radius:14px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.08);
+      flex-direction:column;gap:8px;
+      z-index:120;
+      box-sizing:border-box;
+    }
+    .nav-content.open .mobile-menu{display:flex;}
+    .mobile-menu a{
+      display:block;padding:10px 14px;border-radius:10px;
+      font-weight:800;color:var(--color-text-main);
+      transition:background .25s ease, transform .25s var(--ease-spring);
+    }
+    .mobile-menu a:hover{background:rgba(124,58,237,0.08);transform:translateY(-2px);}
+    .mobile-menu .btn{background:#000 !important;justify-content:center;padding:10px 14px;}
+
+    /* ===== Hero ===== */
+    .hero{
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      padding-top:90px;
+      position:relative;
+    }
+    .hero::before{
+      content:"";
+      position:absolute;
+      width:520px;height:520px;border-radius:999px;
+      left:-140px;top:120px;
+      background:radial-gradient(circle, rgba(124,58,237,0.18), rgba(219,39,119,0.12), rgba(255,255,255,0));
+      filter:blur(18px);
+      animation:floaty 8s ease-in-out infinite;
+      pointer-events:none;
+    }
+    @keyframes floaty{
+      0%,100%{transform:translate(0,0) scale(1);}
+      50%{transform:translate(22px,-18px) scale(1.03);}
+    }
+
+    .hero-grid{
+      display:grid;
+      grid-template-columns:1.15fr 0.85fr;
+      gap:64px;
+      align-items:center;
+    }
+    .hero h1{
+      font-size:4.3rem;
+      margin:16px 0 20px;
+      font-weight:800;
+      letter-spacing:-2px;
+    }
+    .tag-pill{
+      display:inline-block;
+      padding:6px 16px;
+      background:var(--color-primary-light);
+      border-radius:999px;
+      font-size:0.75rem;
+      font-weight:800;
+      color:var(--color-primary);
+      text-transform:uppercase;
+      letter-spacing:1px;
+    }
+    .lead{
+      max-width:920px;
+      font-size:1.06rem;
+      color:var(--color-text-muted);
+      margin-top:12px;
+    }
+    .hero-meta{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:18px;
+      margin-top:26px;
+      padding-top:18px;
+      border-top:1px solid #eef2f6;
+    }
+    .meta-k{
+      font-size:0.78rem;
+      color:var(--color-primary);
+      font-weight:800;
+      letter-spacing:1px;
+      text-transform:uppercase;
+      margin-bottom:4px;
+    }
+    .meta-v{font-size:0.9rem;font-weight:800;color:#0b1220;}
+
+    .hero-visual{
+      background:linear-gradient(135deg, rgba(124,58,237,0.05) 0%, rgba(219,39,119,0.05) 100%);
+      border-radius:var(--radius-lg);
+      padding:18px;
+      border:1px solid rgba(124,58,237,0.1);
+      box-shadow:var(--shadow-glow);
+      transform:translateY(0);
+      transition:transform .35s var(--ease-spring), box-shadow .35s ease;
+    }
+    .hero-visual:hover{transform:translateY(-6px);box-shadow:0 28px 70px -18px rgba(124,58,237,0.35);}
+    .visual-inner{
+      background:#fff;
+      border-radius:var(--radius-md);
+      height:420px;
+      overflow:hidden;
+      position:relative;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border:1px solid var(--border);
+      cursor:zoom-in;
+    }
+    .hero-visual-img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+      transform:scale(1);
+      transition:transform .6s var(--ease);
+      will-change:transform;
+    }
+    .visual-inner:hover .hero-visual-img{transform:scale(1.03);}
+    .visual-inner::after{
+      content:"";
+      position:absolute;inset:0;
+      background:linear-gradient(180deg, rgba(15,23,42,0.0) 55%, rgba(15,23,42,0.10) 100%);
+      pointer-events:none;
+    }
+    .zoom-hint{
+      position:absolute;
+      left:14px;
+      bottom:14px;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,0.88);
+      border:1px solid rgba(15,23,42,0.08);
+      font-weight:900;
+      font-size:0.82rem;
+      color:#0b1220;
+      box-shadow:0 12px 22px rgba(15,23,42,0.12);
+      backdrop-filter:blur(8px);
+      -webkit-backdrop-filter:blur(8px);
+      transition:transform .3s var(--ease-spring);
+      pointer-events:none;
+    }
+    .visual-inner:hover .zoom-hint{transform:translateY(-3px);}
+
+    /* ===== Sections ===== */
+    .section-padding{padding:100px 0;border-bottom:1px solid #eef2f6;}
+    .section-head{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:18px;
+      margin-bottom:18px;
+      flex-wrap:wrap;
+    }
+    .section-head h2{font-size:2.6rem;}
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:#fff;
+      border:1px solid var(--border);
+      font-weight:900;
+      font-size:0.85rem;
+      white-space:nowrap;
+    }
+
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start;}
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:22px;}
+    .grid-2 > *, .grid-3 > *{min-width:0;}
+
+    .content-card{
+      background:var(--color-card);
+      border:1px solid var(--border);
+      border-radius:var(--radius-lg);
+      padding:34px;
+      box-shadow:0 4px 12px rgba(0,0,0,0.03);
+      transition:transform .35s var(--ease-spring), box-shadow .35s ease, border-color .35s ease;
+    }
+    .content-card:hover{
+      transform:translateY(-6px);
+      box-shadow:0 18px 45px rgba(15,23,42,0.10);
+      border-color:rgba(124,58,237,0.22);
+    }
+    .card-title{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+    .card-title h3{font-size:1.25rem;}
+    .muted{color:var(--color-text-muted);}
+
+    .list{
+      list-style:none;
+      margin-top:18px;
+      display:grid;
+      gap:12px;
+    }
+    .list li{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      padding:12px 14px;
+      border-radius:18px;
+      background:#f8fafc;
+      border:1px solid #eef2f6;
+      transition:transform .28s var(--ease-spring), box-shadow .28s ease;
+    }
+    .list li:hover{transform:translateY(-3px);box-shadow:0 10px 22px rgba(15,23,42,0.06);}
+    .list strong{font-weight:900;}
+
+    .callout{
+      margin-top:18px;
+      padding:16px;
+      border-radius:18px;
+      background:rgba(124,58,237,0.06);
+      border:1px solid rgba(124,58,237,0.12);
+    }
+
+    /* Stats */
+    .stat{
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:18px;
+      transition:transform .35s var(--ease-spring), box-shadow .35s ease;
+    }
+    .stat:hover{transform:translateY(-6px);box-shadow:0 18px 45px rgba(15,23,42,0.10);}
+    .stat .value{
+      font-family:var(--font-display);
+      font-weight:900;
+      letter-spacing:-1px;
+      font-size:2rem;
+    }
+    .stat .label{color:var(--color-text-muted);font-size:0.9rem;margin-top:4px;}
+    .stat .note{color:var(--color-text-muted);font-size:0.85rem;margin-top:10px;}
+
+    /* ===== Purple band section ===== */
+    .gradient-section{
+      background:linear-gradient(135deg,#f5f3ff 0%,#fdf2f8 100%);
+      border-top:1px solid #eef2f6;
+      border-bottom:1px solid #eef2f6;
+    }
+
+    /* ===== Prototypes ===== */
+    .proto-grid{
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      gap:18px;
+      margin-top:18px;
+    }
+    .proto{
+      border-radius:18px;
+      overflow:hidden;
+      border:1px solid var(--border);
+      background:#fff;
+      box-shadow:var(--shadow-soft);
+      cursor:zoom-in;
+      transform:translateY(0);
+      transition:transform .35s var(--ease-spring), box-shadow .35s ease;
+    }
+    .proto:hover{transform:translateY(-7px);box-shadow:0 26px 70px rgba(15,23,42,0.14);}
+    .proto img{
+      width:100%;
+      height:320px;
+      object-fit:cover;
+      display:block;
+    }
+    .proto-cap{
+      padding:14px;
+      border-top:1px solid #eef2f6;
+      background:#fff;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      cursor:auto;
+    }
+    .proto-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+    }
+    .proto-top span{
+      font-weight:900;
+      font-size:0.98rem;
+    }
+    .proto-btn{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      font-size:0.82rem;
+      font-weight:900;
+      padding:7px 12px;
+      border-radius:999px;
+      background:rgba(124,58,237,0.10);
+      color:var(--color-primary);
+      transition:all .25s var(--ease-spring);
+    }
+    .proto-btn:hover{
+      background:var(--color-primary);
+      color:#fff;
+      transform:translateY(-2px);
+    }
+    .proto-cap small{color:var(--color-text-muted);font-weight:700;}
+
+    /* Footer CTA */
+    .contact{
+      background:var(--color-primary);
+      color:#fff;
+      padding:100px 0;
+      text-align:center;
+      border-radius:50px 50px 0 0;
+      margin:0 20px;
+      border-bottom:none;
+    }
+    .contact h2{font-size:3.5rem;margin-bottom:18px;color:#fff;}
+    .footer-btns{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin-top:18px;}
+    .btn-white{background:#fff;color:var(--color-primary);}
+    .btn-footer-outline{background:transparent;border:1px solid rgba(255,255,255,0.3);color:#fff;}
+
+    /* ===== Lightbox ===== */
+    .lb-overlay{
+      position:fixed;inset:0;
+      background:rgba(15,23,42,0.82);
+      backdrop-filter:blur(6px);
+      -webkit-backdrop-filter:blur(6px);
+      z-index:2000;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+    }
+    .lb-overlay.is-open{display:flex;}
+    .lb-dialog{
+      width:min(1100px, 96vw);
+      max-height:92vh;
+      background:rgba(255,255,255,0.06);
+      border:1px solid rgba(255,255,255,0.18);
+      border-radius:22px;
+      box-shadow:0 20px 60px rgba(0,0,0,0.35);
+      overflow:hidden;
+      position:relative;
+      transform:translateY(6px);
+      animation:lbIn 180ms ease-out forwards;
+    }
+    @keyframes lbIn{to{transform:translateY(0);}}
+    .lb-topbar{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding:12px 14px;
+      background:rgba(255,255,255,0.08);
+      border-bottom:1px solid rgba(255,255,255,0.12);
+    }
+    .lb-title{font-size:0.9rem;font-weight:900;color:rgba(255,255,255,0.92);}
+    .lb-close{
+      display:inline-flex;align-items:center;justify-content:center;
+      width:38px;height:38px;border-radius:999px;
+      border:1px solid rgba(255,255,255,0.2);
+      background:rgba(255,255,255,0.08);
+      cursor:pointer;
+      transition:transform 0.2s ease;
+    }
+    .lb-close:hover{transform:translateY(-2px);}
+    .lb-body{background:rgba(255,255,255,0.02);padding:14px;}
+    .lb-img{
+      width:100%;
+      height:auto;
+      max-height:calc(92vh - 92px);
+      object-fit:contain;
+      display:block;
+      border-radius:16px;
+      background:#0b1220;
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width:1024px){
+      .hero-grid,.grid-2,.grid-3,.proto-grid{grid-template-columns:1fr;}
+      .hero h1{font-size:3.1rem;}
+      .visual-inner{height:340px;}
+      .proto img{height:360px;}
+      .hero-meta{grid-template-columns:1fr;gap:12px;}
+    }
+    @media (max-width:768px){
+      .container{padding:0 16px;}
+      .nav-links{display:none;}
+      .nav-toggle{display:inline-flex;}
+      .nav-content{padding:8px 12px;max-width:980px;}
+      .hero{padding-top:140px;}
+      .hero h1{font-size:clamp(34px,8vw,44px);letter-spacing:-1px;}
+      .visual-inner{height:260px;}
+      .section-padding{padding:56px 0;}
+      .content-card{padding:20px 16px;}
+      .contact{margin:0 10px;border-radius:34px 34px 0 0;}
+      .contact h2{font-size:2.4rem;}
+      .proto img{height:280px;}
+      /* hide “click to zoom” pill in prototypes for mobile */
+      #prototypes .section-head .pill{display:none;}
+      /* mobile h2 sizing */
+      h2,.section-head h2,.contact h2{font-size:38px;letter-spacing:-.5px;}
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      *{animation:none !important;transition:none !important;scroll-behavior:auto !important;}
+    }
+
+    /* Icon sizes */
+    .card-title svg{width:26px;height:26px;stroke-width:2.2;flex-shrink:0;}
+    .list li svg{width:22px;height:22px;stroke-width:2.1;margin-top:3px;flex-shrink:0;}
+    @media (hover:hover){
+      .list li:hover svg,.content-card:hover .card-title svg{
+        transform:scale(1.08);
+        transition:transform .25s var(--ease-spring);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-content" id="navbar">
+      <button id="navToggle" class="nav-toggle" aria-expanded="false" aria-controls="mobileMenu">
+        <i data-lucide="menu"></i>
+      </button>
+
+      <!-- Adjust this to your real home -->
+      <a class="back-home" href="index.html">
+        <i data-lucide="arrow-left" size="18"></i> BACK HOME
+      </a>
+
+      <div class="nav-links">
+        <a href="#overview">Overview</a>
+        <a href="#build">What I built</a>
+        <a href="#responsive">Responsive</a>
+        <a href="#prototypes">Previews</a>
+        <a href="mailto:hello@saracantagallo.com" class="btn btn-black" style="padding:8px 14px;">Let’s talk</a>
+      </div>
+
+      <div class="mobile-menu" id="mobileMenu">
+        <a href="#overview">Overview</a>
+        <a href="#build">What I built</a>
+        <a href="#responsive">Responsive</a>
+        <a href="#prototypes">Previews</a>
+        <a href="mailto:hello@saracantagallo.com" class="btn btn-black">Let’s talk</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO / OVERVIEW -->
+  <section id="overview" class="hero container">
+    <div class="reveal hero-grid">
+      <div class="hero-text">
+        <span class="tag-pill">Project · HTML/CSS Practice</span>
+        <h1>Staybnb: a 3-page UI that’s <span class="text-gradient">clean & responsive.</span></h1>
+
+        <p class="lead" style="margin-top:0;">
+          Staybnb is a small front-end exercise I turned into a portfolio-ready piece:
+          <strong>Homepage</strong>, <strong>Listing</strong>, and <strong>Hotel detail</strong> pages built with
+          <strong>pure HTML + CSS</strong>, focusing on layout, component consistency, and responsive behavior.
+        </p>
+
+        <div class="hero-meta">
+          <div>
+            <div class="meta-k">Role</div>
+            <div class="meta-v">Front-end UI</div>
+          </div>
+          <div>
+            <div class="meta-k">Tools</div>
+            <div class="meta-v">HTML5 · CSS3</div>
+          </div>
+          <div>
+            <div class="meta-k">Deliverables</div>
+            <div class="meta-v">3 pages (responsive)</div>
+          </div>
+        </div>
+
+        <div style="margin-top:26px;display:flex;gap:12px;flex-wrap:wrap;">
+          <a href="#build" class="btn btn-black"><i data-lucide="sparkles"></i> See what I built</a>
+          <a href="#prototypes" class="btn btn-outline"><i data-lucide="images"></i> View previews</a>
+        </div>
+      </div>
+
+      <!-- HERO IMAGE (click to zoom) -->
+      <div class="hero-visual">
+        <div class="visual-inner lightbox-trigger"
+             data-lightbox="img/staybnb-home.png"
+             data-title="Staybnb · Homepage">
+          <!-- ✅ Replace with your real file path -->
+          <img
+            class="hero-visual-img"
+            src="img/staybnb-home.png"
+            alt="Staybnb – Homepage preview"
+            loading="eager"
+          />
+          <div class="zoom-hint"><i data-lucide="zoom-in"></i> Click to zoom</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHAT I BUILT -->
+  <section id="build" class="section-padding container">
+    <div class="reveal">
+      <div class="section-head">
+        <h2>What I built</h2>
+        <span class="pill"><i data-lucide="code"></i> Pure HTML + CSS</span>
+      </div>
+
+      <p class="lead">
+        The goal was to demonstrate solid front-end fundamentals: layout composition, reusable patterns,
+        and responsive reflow across a simple booking journey.
+      </p>
+
+      <div class="grid-2" style="margin-top:22px;">
+        <div class="content-card">
+          <div class="card-title">
+            <i data-lucide="layers" color="var(--color-primary)"></i>
+            <h3>Pages</h3>
+          </div>
+
+          <ul class="list">
+            <li>
+              <i data-lucide="home" color="var(--color-primary)"></i>
+              <div><strong>Homepage:</strong> hero + search bar, featured destinations, trending, promo CTA.</div>
+            </li>
+            <li>
+              <i data-lucide="list" color="var(--color-primary)"></i>
+              <div><strong>Listing:</strong> results layout with <strong>filter sidebar</strong>, cards, pagination.</div>
+            </li>
+            <li>
+              <i data-lucide="hotel" color="var(--color-primary)"></i>
+              <div><strong>Hotel detail:</strong> image gallery, highlights, booking bar/CTA, map section, host info.</div>
+            </li>
+          </ul>
+
+          <div class="callout">
+            <strong style="display:block;margin-bottom:6px;">Core idea</strong>
+            <span class="muted">Simple flow, strong structure: Home → Listing → Detail, with consistent UI rules.</span>
+          </div>
+        </div>
+
+        <div class="content-card">
+          <div class="card-title">
+            <i data-lucide="wand-2" color="var(--color-primary)"></i>
+            <h3>UI patterns practiced</h3>
+          </div>
+
+          <ul class="list">
+            <li>
+              <i data-lucide="layout-grid" color="var(--color-primary)"></i>
+              <div><strong>Grid systems:</strong> gallery + content areas, cards, and sections.</div>
+            </li>
+            <li>
+              <i data-lucide="mouse-pointer-click" color="var(--color-primary)"></i>
+              <div><strong>CTA hierarchy:</strong> booking action is prominent and consistently placed.</div>
+            </li>
+            <li>
+              <i data-lucide="shapes" color="var(--color-primary)"></i>
+              <div><strong>Component consistency:</strong> cards, spacing, typography scale across pages.</div>
+            </li>
+            <li>
+              <i data-lucide="move" color="var(--color-primary)"></i>
+              <div><strong>Responsive reflow:</strong> multi-column → single-column without breaking hierarchy.</div>
+            </li>
+          </ul>
+
+          <div class="callout">
+            <strong style="display:block;margin-bottom:6px;">Scope note</strong>
+            <span class="muted">No frameworks. The intent was to show clean structure and CSS layout fundamentals.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-3">
+        <div class="stat">
+          <div class="value">3</div>
+          <div class="label">Pages</div>
+          <div class="note">Homepage · Listing · Detail</div>
+        </div>
+        <div class="stat">
+          <div class="value">HTML</div>
+          <div class="label">Structure</div>
+          <div class="note">Semantic layout and predictable sections</div>
+        </div>
+        <div class="stat">
+          <div class="value">CSS</div>
+          <div class="label">Layout</div>
+          <div class="note">Flex/Grid + responsive breakpoints</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESPONSIVE -->
+  <section id="responsive" class="section-padding gradient-section">
+    <div class="container reveal">
+      <span class="tag-pill">Responsive</span>
+      <div class="section-head">
+        <h2>How it adapts across devices</h2>
+        <span class="pill"><i data-lucide="smartphone"></i> Desktop → Mobile</span>
+      </div>
+
+      <p class="lead">
+        The layout keeps priority and actions stable while reducing density: complex areas progressively stack and simplify.
+      </p>
+
+      <div class="grid-2" style="margin-top:22px;">
+        <div class="content-card">
+          <div class="card-title">
+            <i data-lucide="monitor" color="var(--color-primary)"></i>
+            <h3>Desktop behavior</h3>
+          </div>
+
+          <ul class="list">
+            <li>
+              <i data-lucide="columns-2" color="var(--color-primary)"></i>
+              <div><strong>Two-column layouts:</strong> filters + listing, gallery + details.</div>
+            </li>
+            <li>
+              <i data-lucide="scan" color="var(--color-primary)"></i>
+              <div><strong>Scan-friendly cards:</strong> image + title + meta + price are aligned consistently.</div>
+            </li>
+            <li>
+              <i data-lucide="target" color="var(--color-primary)"></i>
+              <div><strong>Action clarity:</strong> booking CTA has a clear “primary” visual style.</div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="content-card">
+          <div class="card-title">
+            <i data-lucide="mobile" color="var(--color-primary)"></i>
+            <h3>Mobile behavior</h3>
+          </div>
+
+          <ul class="list">
+            <li>
+              <i data-lucide="rows-2" color="var(--color-primary)"></i>
+              <div><strong>Progressive stacking:</strong> side areas become sections, reducing horizontal complexity.</div>
+            </li>
+            <li>
+              <i data-lucide="align-left" color="var(--color-primary)"></i>
+              <div><strong>Hierarchy preserved:</strong> title → trust signals → price → CTA remains stable.</div>
+            </li>
+            <li>
+              <i data-lucide="hand" color="var(--color-primary)"></i>
+              <div><strong>Touch-friendly spacing:</strong> larger tap targets and calmer vertical rhythm.</div>
+            </li>
+          </ul>
+
+          <div class="callout">
+            <strong style="display:block;margin-bottom:6px;">Responsive principle</strong>
+            <span class="muted">Keep the decision path consistent. Reduce density, not clarity.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-3">
+        <div class="stat">
+          <div class="value">✔</div>
+          <div class="label">Stable hierarchy</div>
+          <div class="note">Same priorities across breakpoints</div>
+        </div>
+        <div class="stat">
+          <div class="value">✔</div>
+          <div class="label">Readable spacing</div>
+          <div class="note">Density reduces progressively</div>
+        </div>
+        <div class="stat">
+          <div class="value">✔</div>
+          <div class="label">Clear CTAs</div>
+          <div class="note">Primary action always obvious</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PREVIEWS / PROTOTYPES -->
+  <section id="prototypes" class="section-padding container">
+    <div class="reveal">
+      <span class="tag-pill">Previews</span>
+      <div class="section-head">
+        <h2>Pages overview</h2>
+        <span class="pill"><i data-lucide="zoom-in"></i> Click to zoom</span>
+      </div>
+
+      <p class="lead">
+        Static previews of the three pages. Images are clickable (zoom) to keep the page clean and readable.
+      </p>
+
+      <div class="proto-grid">
+        <!-- ✅ Replace src + data-lightbox with your real image paths -->
+        <figure class="proto lightbox-trigger" data-lightbox="img/staybnb-home.png" data-title="Staybnb · Homepage" style="margin:0;">
+          <img src="img/staybnb-home.png" alt="Staybnb – Homepage" />
+          <figcaption class="proto-cap">
+            <div class="proto-top">
+              <span>Homepage</span>
+              <!-- Optional: link to live page -->
+              <a class="proto-btn" href="#" onclick="return false;">
+                Live demo <i data-lucide="arrow-up-right"></i>
+              </a>
+            </div>
+            <small>Hero + search · Featured destinations · CTA modules</small>
+          </figcaption>
+        </figure>
+
+        <figure class="proto lightbox-trigger" data-lightbox="img/staybnb-listing.png" data-title="Staybnb · Listing" style="margin:0;">
+          <img src="img/staybnb-listing.png" alt="Staybnb – Listing page" />
+          <figcaption class="proto-cap">
+            <div class="proto-top">
+              <span>Listing</span>
+              <a class="proto-btn" href="#" onclick="return false;">
+                Live demo <i data-lucide="arrow-up-right"></i>
+              </a>
+            </div>
+            <small>Filters sidebar · Results cards · Pagination</small>
+          </figcaption>
+        </figure>
+
+        <figure class="proto lightbox-trigger" data-lightbox="img/staybnb-detail.png" data-title="Staybnb · Hotel detail" style="margin:0;">
+          <img src="img/staybnb-detail.png" alt="Staybnb – Hotel detail page" />
+          <figcaption class="proto-cap">
+            <div class="proto-top">
+              <span>Hotel detail</span>
+              <a class="proto-btn" href="#" onclick="return false;">
+                Live demo <i data-lucide="arrow-up-right"></i>
+              </a>
+            </div>
+            <small>Gallery · Booking CTA · Map + host info</small>
+          </figcaption>
+        </figure>
+      </div>
+
+      <div class="content-card" style="margin-top:18px;">
+        <div class="card-title">
+          <i data-lucide="check" color="var(--color-primary)"></i>
+          <h3>What this project proves</h3>
+        </div>
+
+        <ul class="list">
+          <li>
+            <i data-lucide="layout-template" color="var(--color-primary)"></i>
+            <div><strong>Layout fundamentals:</strong> structured grids, spacing, and alignment.</div>
+          </li>
+          <li>
+            <i data-lucide="repeat" color="var(--color-primary)"></i>
+            <div><strong>Consistency:</strong> same UI rules across multiple pages.</div>
+          </li>
+          <li>
+            <i data-lucide="smartphone" color="var(--color-primary)"></i>
+            <div><strong>Responsive thinking:</strong> reflow without losing hierarchy.</div>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="contact reveal">
+    <div class="container">
+      <h2>Let’s build something solid.</h2>
+      <p style="opacity:0.9;max-width:760px;margin:0 auto;">
+        If you want a clean and responsive UI that’s built with strong fundamentals, I can help with structure,
+        layout systems, and front-end implementation.
+      </p>
+      <div class="footer-btns">
+        <a class="btn btn-white" href="mailto:hello@saracantagallo.com"><i data-lucide="mail"></i> Email me</a>
+        <a class="btn btn-footer-outline" href="#" onclick="return false;"><i data-lucide="linkedin"></i> LinkedIn</a>
+      </div>
+      <footer style="opacity:0.7;font-size:0.9rem;margin-top:28px;">
+        &copy; 2026 — Staybnb case study · Sara Cantagallo
+      </footer>
+    </div>
+  </section>
+
+  <!-- Lightbox -->
+  <div class="lb-overlay" id="lbOverlay" aria-hidden="true">
+    <div class="lb-dialog" role="dialog" aria-modal="true" aria-label="Image preview">
+      <div class="lb-topbar">
+        <div class="lb-title" id="lbTitle">Preview</div>
+        <button class="lb-close" id="lbClose" aria-label="Close preview">
+          <i data-lucide="x" size="18"></i>
+        </button>
+      </div>
+      <div class="lb-body">
+        <img class="lb-img" id="lbImg" src="" alt="" />
+      </div>
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    // Glass nav on scroll
+    window.addEventListener('scroll', () => {
+      const nav = document.getElementById('navbar');
+      if (!nav) return;
+      if (window.scrollY > 50) nav.classList.add('scrolled');
+      else nav.classList.remove('scrolled');
+    });
+
+    // Reveal on scroll
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('active');
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // Mobile menu toggle
+    const navContent = document.getElementById('navbar');
+    const navToggle = document.getElementById('navToggle');
+
+    function openMobileMenu(){
+      if (!navContent) return;
+      navContent.classList.add('open');
+      navToggle?.setAttribute('aria-expanded','true');
+      lucide.createIcons();
+    }
+    function closeMobileMenu(){
+      if (!navContent) return;
+      navContent.classList.remove('open');
+      navToggle?.setAttribute('aria-expanded','false');
+      lucide.createIcons();
+    }
+    function toggleMobileMenu(){
+      if (!navContent) return;
+      navContent.classList.contains('open') ? closeMobileMenu() : openMobileMenu();
+    }
+
+    if (navToggle){
+      navToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleMobileMenu();
+      });
+    }
+
+    document.addEventListener('click', (e) => {
+      if (!navContent?.classList.contains('open')) return;
+      const insideNav = e.target.closest('#navbar');
+      if (!insideNav) closeMobileMenu();
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!navContent?.classList.contains('open')) return;
+      const link = e.target.closest('.mobile-menu a');
+      if (link) closeMobileMenu();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && navContent?.classList.contains('open')) closeMobileMenu();
+    });
+
+    // Lightbox
+    document.addEventListener('DOMContentLoaded', () => {
+      const overlay = document.getElementById('lbOverlay');
+      const imgEl = document.getElementById('lbImg');
+      const titleEl = document.getElementById('lbTitle');
+      const closeBtn = document.getElementById('lbClose');
+
+      if (!overlay || !imgEl) return;
+
+      function openLightbox(src, title, alt){
+        if (!src) return;
+        imgEl.src = src;
+        imgEl.alt = alt || title || 'Preview image';
+        if (titleEl) titleEl.textContent = title || 'Preview';
+        overlay.classList.add('is-open');
+        overlay.setAttribute('aria-hidden','false');
+        document.body.style.overflow = 'hidden';
+        if (window.lucide?.createIcons) window.lucide.createIcons();
+      }
+
+      function closeLightbox(){
+        overlay.classList.remove('is-open');
+        overlay.setAttribute('aria-hidden','true');
+        document.body.style.overflow = '';
+        imgEl.src = '';
+      }
+
+      function resolveImageFromTrigger(trigger){
+        if (!trigger) return null;
+        if (trigger.tagName === 'IMG') return trigger;
+        return trigger.querySelector('img') || null;
+      }
+
+      function resolveLightboxSrc(trigger){
+        const val = trigger.getAttribute('data-lightbox');
+        const img = resolveImageFromTrigger(trigger);
+        const imgSrc = img?.getAttribute('src') || '';
+
+        if (!val || val === 'self') return imgSrc;
+
+        const isJustFilename = !val.includes('/') && !/^(https?:)?\/\//i.test(val);
+        if (isJustFilename && imgSrc) return imgSrc;
+
+        return val || imgSrc;
+      }
+
+      function resolveTitleAndAlt(trigger){
+        const img = resolveImageFromTrigger(trigger);
+        const alt = img?.getAttribute('alt') || trigger.getAttribute('alt') || '';
+        const title = trigger.getAttribute('data-title') || alt || 'Preview';
+        return { title, alt };
+      }
+
+      document.addEventListener('click', (e) => {
+        // Do not open lightbox when clicking prototype links
+        if (e.target.closest('.proto-btn')) return;
+
+        const trigger = e.target.closest('[data-lightbox], .lightbox-trigger, .visual-inner, .proto');
+        if (!trigger) return;
+
+        const srcRaw = resolveLightboxSrc(trigger);
+        if (!srcRaw) return;
+
+        let src = srcRaw;
+        try { src = new URL(srcRaw, document.baseURI).href; } catch (_) {}
+
+        const { title, alt } = resolveTitleAndAlt(trigger);
+        openLightbox(src, title, alt);
+      });
+
+      closeBtn?.addEventListener('click', closeLightbox);
+
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) closeLightbox();
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && overlay.classList.contains('is-open')) closeLightbox();
+      });
+    });
+  </script>
+</body>
+</html>

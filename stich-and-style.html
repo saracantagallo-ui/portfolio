@@ -1,0 +1,1431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stitch & Style | UI Restyling (Fashion E-commerce)</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root{
+      --font-display:'Outfit',sans-serif;
+      --font-body:'Inter',sans-serif;
+
+      --color-bg:#F9FAFB;
+      --color-card:#ffffff;
+      --color-text-main:#0f172a;
+      --color-text-muted:#64748b;
+
+      --color-primary:#7c3aed;
+      --color-primary-light:#ede9fe;
+
+      --border:#e2e8f0;
+
+      --radius-lg:32px;
+      --radius-md:24px;
+      --radius-sm:12px;
+
+      --shadow-lg:0 20px 25px -5px rgb(0 0 0 / 0.1);
+      --shadow-soft:0 10px 25px rgba(15,23,42,0.08);
+      --shadow-glow:0 25px 50px -12px rgba(124,58,237,0.25);
+
+      --ease-spring:cubic-bezier(0.34, 1.56, 0.64, 1);
+      --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{
+      font-family:var(--font-body);
+      background:var(--color-bg);
+      color:var(--color-text-main);
+      line-height:1.6;
+      overflow-x:hidden;
+    }
+    h1,h2,h3,h4{font-family:var(--font-display);line-height:1.1;}
+    a{text-decoration:none;color:inherit;}
+    img,svg,video,canvas{max-width:100%;height:auto;}
+    .container{max-width:1200px;margin:0 auto;padding:0 24px;}
+
+    /* Reveal */
+    .reveal{opacity:0;transform:translateY(30px);transition:all 0.8s ease-out;}
+    .reveal.active{opacity:1;transform:translateY(0);}
+
+    /* Text gradient (same language as Project 2) */
+    .text-gradient{
+      background:linear-gradient(to right,#7c3aed,#db2777);
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+    }
+
+    /* ===== Buttons ===== */
+    .btn{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:14px 22px;border-radius:999px;
+      font-size:0.95rem;font-weight:700;
+      transition:all .3s var(--ease-spring);
+      cursor:pointer;border:none;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .btn-black{background:#000;color:#fff !important;}
+    .btn-outline{background:transparent;border:1px solid var(--border);color:var(--color-text-main);}
+    .btn:hover{
+      background-color:var(--color-primary);
+      color:#fff !important;
+      transform:translateY(-5px);
+      box-shadow:0 12px 24px rgba(124, 58, 237, 0.3);
+    }
+    .btn:active{transform:translateY(-2px);}
+
+    /* ===== Nav (glass) — same as Project 2 ===== */
+    nav{
+      position:fixed;top:20px;left:0;right:0;
+      z-index:1000;
+      display:flex;justify-content:center;
+      padding:0 12px;
+    }
+    .nav-content{
+      background:rgba(255,255,255,0.3);
+      backdrop-filter:blur(8px);
+      -webkit-backdrop-filter:blur(8px);
+      border:1px solid rgba(255,255,255,0.2);
+      padding:10px 32px;
+      border-radius:999px;
+      display:flex;align-items:center;justify-content:space-between;
+      width:100%;
+      max-width:1000px;
+      transition:all 0.5s ease;
+      position:relative;
+      margin:0 auto;
+    }
+    .nav-content.scrolled{
+      background:rgba(255,255,255,0.7);
+      backdrop-filter:blur(25px) saturate(180%);
+      -webkit-backdrop-filter:blur(25px) saturate(180%);
+      border:1px solid rgba(255,255,255,0.4);
+      transform:translateY(-5px);
+      box-shadow:0 15px 35px rgba(0,0,0,0.08);
+    }
+
+    .back-home{
+      display:flex;align-items:center;gap:8px;
+      color:var(--color-primary) !important;
+      font-weight:800;
+      font-size:0.9rem;
+      transition:transform .3s var(--ease-spring);
+    }
+    .back-home:hover{transform:translateY(-4px);}
+
+    .nav-links{display:flex;gap:28px;align-items:center;}
+    .nav-links a{
+      font-size:0.9rem;font-weight:700;
+      color:#000 !important;
+      position:relative;
+      padding:4px 0;
+      transition:transform .3s var(--ease-spring);
+      display:inline-block;
+    }
+    .nav-links a:hover{transform:translateY(-4px);}
+    .nav-links .btn,.mobile-menu .btn{color:#fff !important;}
+
+    .nav-links a:not(.btn)::after{
+      content:'';
+      position:absolute;width:100%;height:2px;bottom:-2px;left:0;
+      background-color:var(--color-primary);
+      transform:scaleX(0);
+      transform-origin:left;
+      transition:transform .3s ease;
+    }
+    .nav-links a:not(.btn):hover::after{transform:scaleX(1);}
+
+    .nav-toggle{
+      display:none;background:transparent;border:none;cursor:pointer;
+      width:44px;height:44px;align-items:center;justify-content:center;border-radius:10px;
+    }
+    .nav-toggle svg{width:22px;height:22px;color:#000;}
+
+    .mobile-menu{
+      display:none;
+      position:absolute;
+      top:calc(100% + 10px);
+      left:0;right:0;margin:0 auto;
+      max-width:1000px;
+      background:rgba(255,255,255,0.85);
+      backdrop-filter:blur(10px);
+      -webkit-backdrop-filter:blur(10px);
+      padding:12px;border-radius:14px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.08);
+      flex-direction:column;gap:8px;
+      z-index:120;
+    }
+    .nav-content.open .mobile-menu{display:flex;}
+    .mobile-menu a{
+      display:block;padding:10px 14px;border-radius:10px;
+      font-weight:800;color:var(--color-text-main);
+      transition:background .25s ease, transform .25s var(--ease-spring);
+    }
+    .mobile-menu a:hover{background:rgba(124,58,237,0.08);transform:translateY(-2px);}
+    .mobile-menu .btn{background:#000 !important;justify-content:center;padding:10px 14px;}
+
+    /* ===== Layout blocks (aligned with Project 2) ===== */
+    .hero{
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      padding-top:90px;
+      position:relative;
+    }
+
+    /* subtle animated “glow blob” (micro animation) */
+    .hero::before{
+      content:"";
+      position:absolute;
+      width:520px;height:520px;border-radius:999px;
+      left:-140px;top:120px;
+      background:radial-gradient(circle, rgba(124,58,237,0.18), rgba(219,39,119,0.12), rgba(255,255,255,0));
+      filter:blur(18px);
+      animation:floaty 8s ease-in-out infinite;
+      pointer-events:none;
+    }
+    @keyframes floaty{
+      0%,100%{transform:translate(0,0) scale(1);}
+      50%{transform:translate(22px,-18px) scale(1.03);}
+    }
+
+    .hero-grid{
+      display:grid;
+      grid-template-columns:1.2fr 0.8fr;
+      gap:64px;
+      align-items:center;
+    }
+    .hero h1{
+      font-size:4.3rem;
+      margin:16px 0 20px;
+      font-weight:800;
+      letter-spacing:-2px;
+    }
+    .tag-pill{
+      display:inline-block;
+      padding:6px 16px;
+      background:var(--color-primary-light);
+      border-radius:999px;
+      font-size:0.75rem;
+      font-weight:800;
+      color:var(--color-primary);
+      text-transform:uppercase;
+      letter-spacing:1px;
+    }
+    .lead{
+      max-width:920px;
+      font-size:1.06rem;
+      color:var(--color-text-muted);
+      margin-top:12px;
+    }
+
+    .hero-meta{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:18px;
+      margin-top:26px;
+      padding-top:18px;
+      border-top:1px solid #eef2f6;
+    }
+    .meta-k{
+      font-size:0.78rem;
+      color:var(--color-primary);
+      font-weight:800;
+      letter-spacing:1px;
+      text-transform:uppercase;
+      margin-bottom:4px;
+    }
+    .meta-v{font-size:0.9rem;font-weight:800;color:#0b1220;}
+
+    .hero-visual{
+      background:linear-gradient(135deg, rgba(124,58,237,0.05) 0%, rgba(219,39,119,0.05) 100%);
+      border-radius:var(--radius-lg);
+      padding:18px;
+      border:1px solid rgba(124,58,237,0.1);
+      box-shadow:var(--shadow-glow);
+      transform:translateY(0);
+      transition:transform .35s var(--ease-spring), box-shadow .35s ease;
+    }
+    .hero-visual:hover{transform:translateY(-6px);box-shadow:0 28px 70px -18px rgba(124,58,237,0.35);}
+    .visual-inner{
+      background:#fff;
+      border-radius:var(--radius-md);
+      height:420px;
+      overflow:hidden;
+      position:relative;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border:1px solid var(--border);
+      cursor:zoom-in;
+    }
+    .hero-visual-img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+      transform:scale(1);
+      transition:transform .6s var(--ease);
+      will-change:transform;
+    }
+    .visual-inner:hover .hero-visual-img{transform:scale(1.03);}
+    .visual-inner::after{
+      content:"";
+      position:absolute;inset:0;
+      background:linear-gradient(180deg, rgba(15,23,42,0.0) 55%, rgba(15,23,42,0.10) 100%);
+      pointer-events:none;
+    }
+    .zoom-hint{
+      position:absolute;
+      left:14px;
+      bottom:14px;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,0.88);
+      border:1px solid rgba(15,23,42,0.08);
+      font-weight:900;
+      font-size:0.82rem;
+      color:#0b1220;
+      box-shadow:0 12px 22px rgba(15,23,42,0.12);
+      backdrop-filter:blur(8px);
+      -webkit-backdrop-filter:blur(8px);
+      transition:transform .3s var(--ease-spring);
+      pointer-events:none;
+    }
+    .visual-inner:hover .zoom-hint{transform:translateY(-3px);}
+
+    .section-padding{padding:100px 0;border-bottom:1px solid #eef2f6;}
+    .section-head{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:18px;
+      margin-bottom:18px;
+    }
+    .section-head h2{font-size:2.6rem;}
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:#fff;
+      border:1px solid var(--border);
+      font-weight:900;
+      font-size:0.85rem;
+      white-space:nowrap;
+    }
+
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start;}
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:22px;}
+    .grid-2 > *, .grid-3 > *{min-width:0;}
+
+    .content-card{
+      background:var(--color-card);
+      border:1px solid var(--border);
+      border-radius:var(--radius-lg);
+      padding:34px;
+      box-shadow:0 4px 12px rgba(0,0,0,0.03);
+      transition:transform .35s var(--ease-spring), box-shadow .35s ease, border-color .35s ease;
+    }
+    .content-card:hover{
+      transform:translateY(-6px);
+      box-shadow:0 18px 45px rgba(15,23,42,0.10);
+      border-color:rgba(124,58,237,0.22);
+    }
+    .card-title{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+    .card-title h3{font-size:1.25rem;}
+    .muted{color:var(--color-text-muted);}
+
+    .list{
+      list-style:none;
+      margin-top:18px;
+      display:grid;
+      gap:12px;
+    }
+    .list li{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      padding:12px 14px;
+      border-radius:18px;
+      background:#f8fafc;
+      border:1px solid #eef2f6;
+      transition:transform .28s var(--ease-spring), box-shadow .28s ease;
+    }
+    .list li:hover{transform:translateY(-3px);box-shadow:0 10px 22px rgba(15,23,42,0.06);}
+    .list strong{font-weight:900;}
+    .callout{
+      margin-top:18px;
+      padding:16px;
+      border-radius:18px;
+      background:rgba(124,58,237,0.06);
+      border:1px solid rgba(124,58,237,0.12);
+    }
+
+    /* Stats */
+    .stat{
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:18px;
+      transition:transform .35s var(--ease-spring), box-shadow .35s ease;
+    }
+    .stat:hover{transform:translateY(-6px);box-shadow:0 18px 45px rgba(15,23,42,0.10);}
+    .stat .value{
+      font-family:var(--font-display);
+      font-weight:900;
+      letter-spacing:-1px;
+      font-size:2rem;
+    }
+    .stat .label{color:var(--color-text-muted);font-size:0.9rem;margin-top:4px;}
+    .stat .note{color:var(--color-text-muted);font-size:0.85rem;margin-top:10px;}
+
+    /* ===== Approach cards (like “Adaptive Framework”) ===== */
+    .framework-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:18px;
+      margin-top:22px;
+    }
+    .framework-card{
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:26px;
+      padding:22px;
+      box-shadow:0 6px 18px rgba(15,23,42,0.06);
+      position:relative;
+      overflow:hidden;
+      transform:translateY(0);
+      transition:transform .35s var(--ease-spring), box-shadow .35s ease, border-color .35s ease;
+    }
+    .framework-card::before{
+      content:"";
+      position:absolute;inset:-40px -60px auto auto;
+      width:210px;height:210px;border-radius:999px;
+      background:radial-gradient(circle, rgba(124,58,237,0.16), rgba(124,58,237,0));
+      filter:blur(6px);
+      opacity:0.9;
+      pointer-events:none;
+    }
+    .framework-card:hover{
+      transform:translateY(-7px);
+      box-shadow:0 22px 60px rgba(15,23,42,0.12);
+      border-color:rgba(124,58,237,0.22);
+    }
+    .framework-ic{
+      width:46px;height:46px;border-radius:16px;
+      display:flex;align-items:center;justify-content:center;
+      background:rgba(124,58,237,0.10);
+      border:1px solid rgba(124,58,237,0.16);
+      margin-bottom:12px;
+    }
+    .framework-ic svg{width:22px;height:22px;color:var(--color-primary);}
+    .framework-card h3{font-size:1.15rem;margin-bottom:8px;}
+    .framework-card p{color:var(--color-text-muted);font-size:0.96rem;}
+    .framework-card .micro{
+      margin-top:12px;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      font-weight:900;
+      font-size:0.85rem;
+      color:var(--color-primary);
+    }
+    .framework-card .micro svg{width:18px;height:18px;}
+
+    /* ===== Gradient section (required purple band) ===== */
+    .gradient-section{
+      background:linear-gradient(135deg,#f5f3ff 0%,#fdf2f8 100%);
+    }
+
+    /* ===== Prototypes (preview + links) ===== */
+    .proto-grid{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:18px;
+      margin-top:18px;
+    }
+    .proto{
+      border-radius:18px;
+      overflow:hidden;
+      border:1px solid var(--border);
+      background:#fff;
+      box-shadow:var(--shadow-soft);
+      cursor:zoom-in;
+      transform:translateY(0);
+      transition:transform .35s var(--ease-spring), box-shadow .35s ease;
+    }
+    .proto:hover{transform:translateY(-7px);box-shadow:0 26px 70px rgba(15,23,42,0.14);}
+    .proto img{
+      width:100%;
+      height:480px;
+      object-fit:cover;
+      display:block;
+    }
+    .proto-cap{
+      padding:14px;
+      border-top:1px solid #eef2f6;
+      background:#fff;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      cursor:auto;
+    }
+    .proto-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+    }
+    .proto-top span{
+      font-weight:800;
+      font-size:0.98rem;
+    }
+    .proto-btn{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      font-size:0.82rem;
+      font-weight:800;
+      padding:7px 12px;
+      border-radius:999px;
+      background:rgba(124,58,237,0.10);
+      color:var(--color-primary);
+      transition:all .25s var(--ease-spring);
+    }
+    .proto-btn:hover{
+      background:var(--color-primary);
+      color:#fff;
+      transform:translateY(-2px);
+    }
+    .proto-cap small{color:var(--color-text-muted);font-weight:700;}
+
+    /* Footer CTA */
+    .contact{
+      background:var(--color-primary);
+      color:#fff;
+      padding:100px 0;
+      text-align:center;
+      border-radius:50px 50px 0 0;
+      margin:0 20px;
+      border-bottom:none;
+    }
+    .contact h2{font-size:3.5rem;margin-bottom:18px;color:#fff;}
+    .footer-btns{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin-top:18px;}
+    .btn-white{background:#fff;color:var(--color-primary);}
+    .btn-footer-outline{background:transparent;border:1px solid rgba(255,255,255,0.3);color:#fff;}
+
+    /* ===== Lightbox ===== */
+    .lb-overlay{
+      position:fixed;inset:0;
+      background:rgba(15,23,42,0.82);
+      backdrop-filter:blur(6px);
+      -webkit-backdrop-filter:blur(6px);
+      z-index:2000;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+    }
+    .lb-overlay.is-open{display:flex;}
+    .lb-dialog{
+      width:min(1100px, 96vw);
+      max-height:92vh;
+      background:rgba(255,255,255,0.06);
+      border:1px solid rgba(255,255,255,0.18);
+      border-radius:22px;
+      box-shadow:0 20px 60px rgba(0,0,0,0.35);
+      overflow:hidden;
+      position:relative;
+      transform:translateY(6px);
+      animation:lbIn 180ms ease-out forwards;
+    }
+    @keyframes lbIn{to{transform:translateY(0);}}
+    .lb-topbar{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding:12px 14px;
+      background:rgba(255,255,255,0.08);
+      border-bottom:1px solid rgba(255,255,255,0.12);
+    }
+    .lb-title{font-size:0.9rem;font-weight:900;color:rgba(255,255,255,0.92);}
+    .lb-close{
+      display:inline-flex;align-items:center;justify-content:center;
+      width:38px;height:38px;border-radius:999px;
+      border:1px solid rgba(255,255,255,0.2);
+      background:rgba(255,255,255,0.08);
+      cursor:pointer;
+      transition:transform 0.2s ease;
+    }
+    .lb-close:hover{transform:translateY(-2px);}
+    .lb-body{background:rgba(255,255,255,0.02);padding:14px;}
+    .lb-img{
+      width:100%;
+      height:auto;
+      max-height:calc(92vh - 92px);
+      object-fit:contain;
+      display:block;
+      border-radius:16px;
+      background:#0b1220;
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width:1024px){
+      .hero-grid,.grid-2,.grid-3,.framework-grid,.proto-grid{grid-template-columns:1fr;}
+      .hero h1{font-size:3.1rem;}
+      .visual-inner{height:340px;}
+      .proto img{height:420px;}
+    }
+    @media (max-width:768px){
+      .container{padding:0 16px;}
+      .nav-links{display:none;}
+      .nav-toggle{display:inline-flex;}
+      .nav-content{padding:8px 12px;max-width:980px;}
+      .hero{padding-top:140px;}
+      .hero h1{font-size:40px;letter-spacing:-1px;}
+      .visual-inner{height:260px;}
+      .section-padding{padding:56px 0;}
+      .content-card{padding:20px 16px;}
+      .hero-meta{grid-template-columns:1fr;gap:12px;}
+      .contact{margin:0 10px;border-radius:34px 34px 0 0;}
+      .contact h2{font-size:2.4rem;}
+      .proto img{height:320px;}
+    }
+
+    /* Reduce motion */
+    @media (prefers-reduced-motion: reduce){
+      *{animation:none !important;transition:none !important;scroll-behavior:auto !important;}
+    }
+
+    /* ===== Icon scale refinement ===== */
+
+/* Icons in card titles */
+.card-title svg {
+  width: 26px;
+  height: 26px;
+  stroke-width: 2.2;
+  flex-shrink: 0;
+}
+
+/* Icons inside lists (UX anchors, micro-interactions, etc.) */
+.list li svg {
+  width: 22px;
+  height: 22px;
+  stroke-width: 2.1;
+  margin-top: 3px; /* better vertical alignment with text */
+  flex-shrink: 0;
+}
+
+/* Slight emphasis on hover (desktop only) */
+@media (hover: hover) {
+  .list li:hover svg,
+  .content-card:hover .card-title svg {
+    transform: scale(1.08);
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+}
+/* ===== Mobile preview: narrow vertical frame (stable) ===== */
+.proto-mobile{
+  width:100%;
+  max-width: 420px;          /* ok su desktop/tablet */
+  margin-left:auto;
+  margin-right:auto;
+}
+
+.proto-mobile img{
+  width:100%;
+  aspect-ratio: 9 / 16;      /* frame mobile “vero” */
+  height:auto;               /* niente altezze fisse */
+  object-fit: cover;
+  object-position: top;
+  border-radius: 18px;
+}
+
+/* ✅ MOBILE MENU: centrato perfettamente come nell'esempio */
+nav { position: fixed; top: 20px; left: 0; right: 0; }
+
+.nav-content{
+  position: relative;            /* già ce l'hai, ma lo ribadisco */
+  margin: 0 auto;                /* centra il pill */
+}
+
+/* Il problema di solito è qui: left:0/right:0 lo centra "nel contenitore",
+   ma se il contenitore ha padding o non coincide con la viewport, si nota.
+   Questa versione centra il menu sulla viewport in modo matematico. */
+.mobile-menu{
+  left: 50% !important;
+  right: auto !important;
+  transform: translateX(-50%) !important;
+
+  /* stessa logica del pill: largo quanto la viewport con padding laterale,
+     ma con max-width come da design */
+  width: calc(100vw - 24px) !important;  /* = nav padding 0 12px */
+  max-width: 1000px !important;
+
+  /* evita micro-shift su alcuni browser */
+  box-sizing: border-box;
+}
+
+/* (opzionale ma consigliato) evita che un transform sul parent alteri calcoli */
+.nav-content{ transform: none; }
+
+:root{
+  --font-display:'Outfit',sans-serif;
+  --font-body:'Inter',sans-serif;
+
+  --color-bg:#F9FAFB;
+  --color-card:#ffffff;
+  --color-text-main:#0f172a;
+  --color-text-muted:#64748b;
+
+  --color-primary:#7c3aed;
+  --color-primary-light:#ede9fe;
+
+  --border:#e2e8f0;
+
+  --radius-lg:32px;
+  --radius-md:24px;
+  --radius-sm:12px;
+
+  --shadow-lg:0 20px 25px -5px rgb(0 0 0 / 0.1);
+  --shadow-soft:0 10px 25px rgba(15,23,42,0.08);
+  --shadow-glow:0 25px 50px -12px rgba(124,58,237,0.25);
+
+  --ease-spring:cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease:cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:var(--font-body);
+  background:var(--color-bg);
+  color:var(--color-text-main);
+  line-height:1.6;
+  overflow-x:hidden;
+}
+h1,h2,h3,h4{font-family:var(--font-display);line-height:1.1;}
+a{text-decoration:none;color:inherit;}
+img,svg,video{max-width:100%;height:auto;display:block;}
+
+/* ===========================
+   GLOBAL SPACING
+=========================== */
+section{
+  padding-left:10px;
+  padding-right:10px;
+}
+
+.container{
+  max-width:1200px;
+  margin:0 auto;
+  padding-left:10px;
+  padding-right:10px;
+}
+
+/* ===========================
+   REVEAL
+=========================== */
+.reveal{opacity:0;transform:translateY(30px);transition:all .8s ease;}
+.reveal.active{opacity:1;transform:translateY(0);}
+
+/* ===========================
+   TEXT
+=========================== */
+.text-gradient{
+  background:linear-gradient(to right,#7c3aed,#db2777);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+
+/* ===========================
+   BUTTONS
+=========================== */
+.btn{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:14px 32px;
+  border-radius:999px;
+  font-size:.95rem;
+  font-weight:700;
+  border:none;
+  cursor:pointer;
+  transition:all .3s var(--ease-spring);
+}
+.btn-black{background:#000;color:#fff;}
+.btn-outline{background:transparent;border:1px solid var(--border);}
+.btn:hover{
+  background:var(--color-primary);
+  color:#fff;
+  transform:translateY(-4px);
+  box-shadow:0 12px 24px rgba(124,58,237,.3);
+}
+
+/* ===========================
+   NAV
+=========================== */
+nav{
+  position:fixed;
+  top:20px;
+  left:0;
+  right:0;
+  z-index:1000;
+  display:flex;
+  justify-content:center;
+}
+.nav-content{
+  background:rgba(255,255,255,.35);
+  backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,.2);
+  border-radius:999px;
+  padding:8px 14px;
+  width:100%;
+  max-width:1000px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.nav-links{display:flex;gap:28px;align-items:center;}
+.nav-toggle{display:none;background:none;border:0;cursor:pointer}
+
+/* ===========================
+   HERO
+=========================== */
+.hero{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  padding-top:120px;
+}
+.hero-grid{
+  display:grid;
+  grid-template-columns:1.2fr .8fr;
+  gap:64px;
+}
+.hero h1{
+  font-size:4.3rem;
+  font-weight:800;
+  letter-spacing:-2px;
+}
+.lead{font-size:1.05rem;color:var(--color-text-muted);}
+
+/* ===========================
+   SECTIONS
+=========================== */
+.section-padding{
+  padding-top:100px;
+  padding-bottom:100px;
+  border-bottom:1px solid #eef2f6;
+}
+.section-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  gap:18px;
+  flex-wrap:wrap;
+}
+.section-head h2{font-size:2.6rem;}
+
+.grid-2,
+.grid-3,
+.framework-grid,
+.proto-grid{
+  display:grid;
+  gap:18px;
+}
+.grid-2{grid-template-columns:1fr 1fr;}
+.grid-3{grid-template-columns:repeat(3,1fr);}
+.framework-grid{grid-template-columns:repeat(3,1fr);}
+.proto-grid{grid-template-columns:1fr 1fr;}
+
+/* ===========================
+   CARDS
+=========================== */
+.content-card{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  padding:34px;
+  transition:all .35s var(--ease-spring);
+}
+.content-card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 18px 45px rgba(15,23,42,.1);
+}
+
+/* ===========================
+   PROTOTYPES
+=========================== */
+.proto{
+  border-radius:18px;
+  overflow:hidden;
+  border:1px solid var(--border);
+  background:#fff;
+}
+.proto img{
+  width:100%;
+  aspect-ratio:16/10;
+  object-fit:cover;
+}
+.proto-mobile img{
+  aspect-ratio:9/16;
+}
+
+/* ===========================
+   CONTACT
+=========================== */
+.contact{
+  background:var(--color-primary);
+  color:#fff;
+  padding-top:100px;
+  padding-bottom:100px;
+  border-radius:50px 50px 0 0;
+}
+.contact h2{font-size:3.5rem}
+
+/* ===========================
+   MOBILE
+=========================== */
+@media (max-width:1024px){
+  .hero-grid,
+  .grid-2,
+  .grid-3,
+  .framework-grid,
+  .proto-grid{
+    grid-template-columns:1fr;
+  }
+}
+
+@media (max-width:768px){
+
+  /* H2 SOLO MOBILE */
+  h2,
+  .section-head h2,
+  .contact h2{
+    font-size:38px;
+    letter-spacing:-.5px;
+  }
+
+  .hero h1{
+    font-size:clamp(34px,8vw,44px);
+    letter-spacing:-1px;
+  }
+
+  .nav-links{display:none;}
+  .nav-toggle{display:flex;}
+
+  .section-padding{
+    padding-top:56px;
+    padding-bottom:56px;
+  }
+
+  .content-card{
+    padding:18px 14px;
+  }
+}
+
+/* ===========================
+   REDUCE MOTION
+=========================== */
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+}
+
+  </style>
+</head>
+
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-content" id="navbar">
+      <button id="navToggle" class="nav-toggle" aria-expanded="false" aria-controls="mobileMenu">
+        <i data-lucide="menu"></i>
+      </button>
+
+      <a class="back-home" href="index.html">
+        <i data-lucide="arrow-left" size="18"></i> BACK HOME
+      </a>
+
+      <div class="nav-links">
+        <a href="#overview">Overview</a>
+        <a href="#approach">Approach</a>
+        <a href="#ux">UX anchors</a>
+        <a href="#prototypes">Prototypes</a>
+        <a href="mailto:hello@saracantagallo.com" class="btn btn-black" style="padding:8px 14px;">Let’s talk</a>
+      </div>
+
+      <div class="mobile-menu" id="mobileMenu">
+        <a href="#overview">Overview</a>
+        <a href="#approach">Approach</a>
+        <a href="#ux">UX anchors</a>
+        <a href="#prototypes">Prototypes</a>
+        <a href="mailto:hello@saracantagallo.com" class="btn btn-black">Let’s talk</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO / OVERVIEW -->
+  <section id="overview" class="hero container">
+    <div class="reveal hero-grid">
+      <div class="hero-text">
+        <span class="tag-pill">Case Study · UI Restyling</span>
+        <h1>High fashion energy, <span class="text-gradient">e-commerce clarity.</span></h1>
+
+        <p class="lead" style="margin-top:0;">
+          Stitch &amp; Style is a fashion e-commerce concept where I explored an “haute couture” visual language,
+          without sacrificing usability. The UI is expressive, but the shopping system stays familiar:
+          clear entry points, readable product cards, and unmistakable calls to action.
+        </p>
+
+        <div class="hero-meta">
+          <div>
+            <div class="meta-k">Role</div>
+            <div class="meta-v">UI Designer</div>
+          </div>
+          <div>
+            <div class="meta-k">Focus</div>
+            <div class="meta-v">Visual system · Interaction cues · Scanability</div>
+          </div>
+          <div>
+            <div class="meta-k">Deliverables</div>
+            <div class="meta-v">Homepage (Desktop/Mobile)</div>
+          </div>
+        </div>
+
+        <div style="margin-top:26px;display:flex;gap:12px;flex-wrap:wrap;">
+          <a href="#approach" class="btn btn-black"><i data-lucide="sparkles"></i> View approach</a>
+          <a href="#prototypes" class="btn btn-outline"><i data-lucide="layout"></i> View prototypes</a>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="visual-inner lightbox-trigger" data-lightbox="img/copertina-stich-and-style-project.jpg" data-title="Stitch & Style · Desktop">
+          <img
+            class="hero-visual-img"
+            src="img/copertina-stich-and-style-project.jpg"
+            alt="Stitch & Style – Homepage restyling (Desktop)"
+            loading="eager"
+          />
+          <div class="zoom-hint"><i data-lucide="zoom-in"></i> Click to zoom</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- APPROACH (Adaptive Framework-style cards) -->
+  <section id="approach" class="section-padding container">
+    <div class="reveal">
+      <div class="section-head">
+        <h2>Approach</h2>
+        <span class="pill"><i data-lucide="wand-2"></i> A controlled statement</span>
+      </div>
+
+      <p class="lead">
+        This is a UI-led restyling. The goal was to inject personality and high-fashion confidence,
+        while keeping the interface predictable for shopping intent. The framework below explains how.
+      </p>
+
+      <div class="framework-grid">
+        <div class="framework-card">
+          <div class="framework-ic"><i data-lucide="type"></i></div>
+          <h3>Editorial typography, commercial rules.</h3>
+          <p>
+            Headlines set the mood, but functional text remains utilitarian and readable.
+            Contrast and spacing protect scanability.
+          </p>
+          <div class="micro"><i data-lucide="arrow-right"></i> Mood without friction.</div>
+        </div>
+
+        <div class="framework-card">
+          <div class="framework-ic"><i data-lucide="layers"></i></div>
+          <h3>Bold sections, modular structure.</h3>
+          <p>
+            Dramatic blocks create rhythm, yet the layout stays modular.
+            Products, categories, and editorial moments are clearly separated.
+          </p>
+          <div class="micro"><i data-lucide="arrow-right"></i> Visual rhythm + order.</div>
+        </div>
+
+        <div class="framework-card">
+          <div class="framework-ic"><i data-lucide="mouse-pointer-2"></i></div>
+          <h3>Interaction cues are unmistakable.</h3>
+          <p>
+            Hover and focus states, clear button styling, and consistent patterns
+            make actions feel obvious across devices.
+          </p>
+          <div class="micro"><i data-lucide="arrow-right"></i> Affordance first.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- UX ANCHORS (purple gradient section like the other landing) -->
+  <section id="ux" class="section-padding gradient-section">
+    <div class="container reveal">
+      <span class="tag-pill">02 UX anchors</span>
+      <div class="section-head">
+        <h2>Why the UI still supports e-commerce</h2>
+        <span class="pill"><i data-lucide="check-circle"></i> Clarity stays intact</span>
+      </div>
+
+      <p class="lead">
+        The visual system is expressive, but the user journey remains structured. These are the elements that
+        keep the experience conversion-friendly.
+      </p>
+
+      <div class="grid-2" style="margin-top:22px;">
+        <div class="content-card">
+          <div class="card-title">
+            <i data-lucide="shopping-bag" color="var(--color-primary)"></i>
+            <h3>Shopping fundamentals</h3>
+          </div>
+
+          <ul class="list">
+            <li>
+              <i data-lucide="grid-3x3" color="var(--color-primary)"></i>
+              <div><strong>Product grid clarity:</strong> consistent cards, spacing, and price visibility.</div>
+            </li>
+            <li>
+              <i data-lucide="ticket" color="var(--color-primary)"></i>
+              <div><strong>Information hierarchy:</strong> category → product → price → CTA, in that order.</div>
+            </li>
+            <li>
+              <i data-lucide="mouse-pointer-click" color="var(--color-primary)"></i>
+              <div><strong>CTA visibility:</strong> primary actions read as primary, not decorative.</div>
+            </li>
+            <li>
+              <i data-lucide="compass" color="var(--color-primary)"></i>
+              <div><strong>Orientation cues:</strong> clear entry points for key collections and gender sections.</div>
+            </li>
+          </ul>
+
+          <div class="callout">
+            <strong style="display:block;margin-bottom:6px;">Design statement</strong>
+            <span class="muted">
+              High-fashion aesthetics are allowed, as long as decision points remain explicit and predictable.
+            </span>
+          </div>
+        </div>
+
+        <div class="content-card">
+  <div class="card-title">
+    <i data-lucide="sparkles" color="var(--color-primary)"></i>
+    <h3>Micro-interactions that guide attention</h3>
+  </div>
+
+  <p class="muted">
+    Interactions are intentionally device-specific. Desktop stays subtle and editorial, while mobile becomes more explicit and fluid,
+    so users always understand what is clickable and what the next step is.
+  </p>
+
+  <ul class="list">
+    <li>
+      <i data-lucide="brush" color="var(--color-primary)"></i>
+      <div>
+        <strong>Button feedback on hover (Desktop):</strong>
+        the primary button changes color, reinforcing the action without adding visual noise.
+      </div>
+    </li>
+
+    <li>
+      <i data-lucide="images" color="var(--color-primary)"></i>
+      <div>
+        <strong>Card hover reveals intent (Desktop):</strong>
+        product cards swap imagery, and the “View details” button appears, turning browsing into a clear next action.
+      </div>
+    </li>
+
+    <li>
+      <i data-lucide="eye" color="var(--color-primary)"></i>
+      <div>
+        <strong>Explicit CTAs (Mobile):</strong>
+        the call to action is always visible, keeping the experience elegant but unmistakably shoppable.
+      </div>
+    </li>
+
+    <li>
+      <i data-lucide="move-horizontal" color="var(--color-primary)"></i>
+      <div>
+        <strong>Grid becomes carousel (Mobile):</strong>
+        horizontal scrolling improves rhythm and reduces friction, making the page feel faster and more continuous.
+      </div>
+    </li>
+  </ul>
+
+  <div class="callout">
+    <strong style="display:block;margin-bottom:6px;">Interaction principle</strong>
+    <span class="muted">
+      Subtle discovery on desktop, clear direction on mobile. Same identity, different clarity level.
+    </span>
+  </div>
+</div>
+
+      </div>
+
+      <div class="grid-3">
+        <div class="stat">
+          <div class="value">✔</div>
+          <div class="label">Hierarchy</div>
+          <div class="note">Clear priorities, less ambiguity.</div>
+        </div>
+        <div class="stat">
+          <div class="value">✔</div>
+          <div class="label">Scanability</div>
+          <div class="note">Modular rhythm supports browsing.</div>
+        </div>
+        <div class="stat">
+          <div class="value">✔</div>
+          <div class="label">Interaction clarity</div>
+          <div class="note">Micro feedback improves confidence.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROTOTYPES (preview + links) -->
+  <section id="prototypes" class="section-padding container">
+    <div class="reveal">
+      <span class="tag-pill">03 Prototypes</span>
+      <div class="section-head">
+        <h2>UI output (Desktop & Mobile)</h2>
+        <span class="pill"><i data-lucide="zoom-in"></i> Click to zoom</span>
+      </div>
+
+      <p class="lead">
+        Each preview is clickable for zoom. The button opens the interactive prototype link (add your URLs).
+      </p>
+
+      <div class="proto-grid">
+        <figure class="proto lightbox-trigger" data-lightbox="file-pf/stitch-and-style-design.png" data-title="Stitch & Style · Desktop" style="margin:0;">
+          <img src="file-pf/stitch-and-style-design.png" alt="Stitch & Style – Desktop restyling" />
+          <figcaption class="proto-cap">
+            <div class="proto-top">
+              <span>Desktop</span>
+              <a class="proto-btn" href="https://www.figma.com/proto/marD4to1O3ZU72ApwnW4M8/pf?node-id=310-603&t=UhSPXwC7eQ68S8Gi-1&scaling=min-zoom&content-scaling=fixed&page-id=24%3A1881" target="_blank" rel="noopener">
+                View prototype <i data-lucide="arrow-up-right"></i>
+              </a>
+            </div>
+            <small>Statement hero · Clear product scanning · Strong CTAs</small>
+          </figcaption>
+        </figure>
+
+        <figure class="proto proto-mobile lightbox-trigger"
+        data-lightbox="img/stich-and-style-mobile.jpg"
+        data-title="Stitch & Style · Mobile"
+        style="margin:0;">
+
+  <img src="img/stich-and-style-mobile.jpg"
+       alt="Stitch & Style – Mobile restyling" />
+
+  <figcaption class="proto-cap">
+    <div class="proto-top">
+      <span>Mobile</span>
+      <a class="proto-btn" href="https://www.figma.com/proto/marD4to1O3ZU72ApwnW4M8/pf?node-id=310-1319&t=TXjd4mdL8OAJ8HXF-1&scaling=min-zoom&content-scaling=fixed&page-id=310%3A1318" target="_blank" rel="noopener">
+        View prototype <i data-lucide="arrow-up-right"></i>
+      </a>
+    </div>
+    <small>Explicit CTAs · Carousel grid · Smooth mobile flow</small>
+  </figcaption>
+</figure>
+
+
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="contact reveal">
+    <div class="container">
+      <h2>Let’s build a system that converts.</h2>
+      <p style="opacity:0.9;max-width:760px;margin:0 auto;">
+        If you want a fashion-forward interface that still feels effortless to shop, we can work together on UI systems,
+        hierarchy, and conversion-aware interaction patterns.
+      </p>
+      <div class="footer-btns">
+        <a class="btn btn-white" href="mailto:hello@saracantagallo.com"><i data-lucide="mail"></i> Email me</a>
+        <a class="btn btn-footer-outline" href="#" onclick="return false;"><i data-lucide="linkedin"></i> LinkedIn</a>
+      </div>
+      <footer style="opacity:0.7;font-size:0.9rem;margin-top:28px;">
+        &copy; 2026 — Stitch &amp; Style case study · Sara Cantagallo
+      </footer>
+    </div>
+  </section>
+
+  <!-- Lightbox -->
+  <div class="lb-overlay" id="lbOverlay" aria-hidden="true">
+    <div class="lb-dialog" role="dialog" aria-modal="true" aria-label="Image preview">
+      <div class="lb-topbar">
+        <div class="lb-title" id="lbTitle">Preview</div>
+        <button class="lb-close" id="lbClose" aria-label="Close preview">
+          <i data-lucide="x" size="18"></i>
+        </button>
+      </div>
+      <div class="lb-body">
+        <img class="lb-img" id="lbImg" src="" alt="" />
+      </div>
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    // Glass nav on scroll
+    window.addEventListener('scroll', () => {
+      const nav = document.getElementById('navbar');
+      if (!nav) return;
+      if (window.scrollY > 50) nav.classList.add('scrolled');
+      else nav.classList.remove('scrolled');
+    });
+
+    // Reveal on scroll
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('active');
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // Mobile menu toggle
+    const navContent = document.getElementById('navbar');
+    const navToggle = document.getElementById('navToggle');
+
+    function openMobileMenu(){
+      if (!navContent) return;
+      navContent.classList.add('open');
+      navToggle?.setAttribute('aria-expanded','true');
+      lucide.createIcons();
+    }
+    function closeMobileMenu(){
+      if (!navContent) return;
+      navContent.classList.remove('open');
+      navToggle?.setAttribute('aria-expanded','false');
+      lucide.createIcons();
+    }
+    function toggleMobileMenu(){
+      if (!navContent) return;
+      navContent.classList.contains('open') ? closeMobileMenu() : openMobileMenu();
+    }
+
+    if (navToggle){
+      navToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleMobileMenu();
+      });
+    }
+
+    document.addEventListener('click', (e) => {
+      if (!navContent?.classList.contains('open')) return;
+      const insideNav = e.target.closest('#navbar');
+      if (!insideNav) closeMobileMenu();
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!navContent?.classList.contains('open')) return;
+      const link = e.target.closest('.mobile-menu a');
+      if (link) closeMobileMenu();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && navContent?.classList.contains('open')) closeMobileMenu();
+    });
+
+    // Lightbox
+    document.addEventListener('DOMContentLoaded', () => {
+      const overlay = document.getElementById('lbOverlay');
+      const imgEl = document.getElementById('lbImg');
+      const titleEl = document.getElementById('lbTitle');
+      const closeBtn = document.getElementById('lbClose');
+
+      if (!overlay || !imgEl) return;
+
+      function openLightbox(src, title, alt){
+        if (!src) return;
+        imgEl.src = src;
+        imgEl.alt = alt || title || 'Preview image';
+        if (titleEl) titleEl.textContent = title || 'Preview';
+        overlay.classList.add('is-open');
+        overlay.setAttribute('aria-hidden','false');
+        document.body.style.overflow = 'hidden';
+        if (window.lucide?.createIcons) window.lucide.createIcons();
+      }
+
+      function closeLightbox(){
+        overlay.classList.remove('is-open');
+        overlay.setAttribute('aria-hidden','true');
+        document.body.style.overflow = '';
+        imgEl.src = '';
+      }
+
+      function resolveImageFromTrigger(trigger){
+        if (!trigger) return null;
+        if (trigger.tagName === 'IMG') return trigger;
+        return trigger.querySelector('img') || null;
+      }
+
+      function resolveLightboxSrc(trigger){
+        const val = trigger.getAttribute('data-lightbox');
+        const img = resolveImageFromTrigger(trigger);
+        const imgSrc = img?.getAttribute('src') || '';
+
+        if (!val || val === 'self') return imgSrc;
+
+        const isJustFilename = !val.includes('/') && !/^(https?:)?\/\//i.test(val);
+        if (isJustFilename && imgSrc) return imgSrc;
+
+        return val || imgSrc;
+      }
+
+      function resolveTitleAndAlt(trigger){
+        const img = resolveImageFromTrigger(trigger);
+        const alt = img?.getAttribute('alt') || trigger.getAttribute('alt') || '';
+        const title = trigger.getAttribute('data-title') || alt || 'Preview';
+        return { title, alt };
+      }
+
+      document.addEventListener('click', (e) => {
+        // Do not open lightbox when clicking prototype links
+        if (e.target.closest('.proto-btn')) return;
+
+        const trigger = e.target.closest('[data-lightbox], .lightbox-trigger, .visual-inner, .proto');
+        if (!trigger) return;
+
+        const srcRaw = resolveLightboxSrc(trigger);
+        if (!srcRaw) return;
+
+        let src = srcRaw;
+        try { src = new URL(srcRaw, document.baseURI).href; } catch (_) {}
+
+        const { title, alt } = resolveTitleAndAlt(trigger);
+        openLightbox(src, title, alt);
+      });
+
+      closeBtn?.addEventListener('click', closeLightbox);
+
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) closeLightbox();
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && overlay.classList.contains('is-open')) closeLightbox();
+      });
+    });
+  </script>
+</body>
+</html>

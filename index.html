@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sara Cantagallo | Strategist & UX/UI Designer</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --font-display: 'Outfit', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --color-bg: #F9FAFB;
+            --color-text-main: #0f172a;
+            --color-text-muted: #64748b;
+            --color-primary: #7c3aed; 
+            --color-primary-light: #ede9fe;
+            --radius-lg: 32px;
+            --radius-md: 24px;
+            --radius-sm: 12px;
+            --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+            --shadow-glow: 0 25px 50px -12px rgba(124, 58, 237, 0.25);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: var(--font-body); background-color: var(--color-bg); color: var(--color-text-main); line-height: 1.6; overflow-x: hidden; }
+        h1, h2, h3, h4 { font-family: var(--font-display); line-height: 1.1; }
+        a { text-decoration: none; color: inherit; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        .text-gradient { background: linear-gradient(to right, #7c3aed, #db2777); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+        /* --- BUTTONS SYSTEM --- */
+        .btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 14px 22px; border-radius: 999px;
+            font-size: 0.95rem; font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: pointer; border: none;
+        }
+
+        .btn-black { background: #000; color: #fff; }
+        .btn-outline { background: transparent; border: 1px solid #e2e8f0; color: var(--color-text-main); }
+        .btn-white { background: #fff; color: var(--color-primary); }
+        .btn-footer-outline { background: transparent; border: 1px solid rgba(255,255,255,0.3); color: #fff; }
+
+        .btn:hover {
+            background-color: var(--color-primary);
+            color: #fff !important;
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(124, 58, 237, 0.3);
+        }
+
+        /* --- NAVIGATION (GLASS EFFECT ENHANCED) --- */
+        nav { position: fixed; top: 20px; left: 0; right: 0; z-index: 100; display: flex; justify-content: center; padding: 0 20px; }
+        .nav-content {
+            background: rgba(255, 255, 255, 0.3); 
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2); 
+            padding: 10px 32px; border-radius: 999px;
+            display: flex; align-items: center; justify-content: space-between; 
+            width: 100%; max-width: 1000px; transition: all 0.5s ease;
+        }
+        .nav-content.scrolled { 
+            background: rgba(255, 255, 255, 0.7); 
+            backdrop-filter: blur(25px) saturate(180%); 
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            transform: translateY(-5px); 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.08); 
+        }
+
+        .nav-links { display: flex; gap: 32px; align-items: center; }
+        .nav-links a { 
+            font-size: 0.9rem; font-weight: 600; color: #000 !important; position: relative; padding: 4px 0;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); display: inline-block;
+        }
+        .nav-links a:hover { transform: translateY(-4px); }
+        .nav-links a::after {
+            content: ''; position: absolute; width: 100%; height: 2px; bottom: -2px; left: 0;
+            background-color: var(--color-primary); transform: scaleX(0); transition: transform 0.3s ease;
+        }
+        .nav-links a:hover::after { transform: scaleX(1); }
+
+        /* --- HERO --- */
+        .hero { min-height: 100vh; display: flex; align-items: center; padding-top: 80px; }
+        .hero-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 64px; align-items: center; }
+        .hero-label {
+            display: inline-block; background: var(--color-primary-light); color: var(--color-primary);
+            padding: 8px 20px; border-radius: 999px; font-weight: 700; font-size: 0.85rem;
+            text-transform: uppercase; letter-spacing: 1px; margin-bottom: 24px;
+        }
+        .hero h1 { font-size: 4.5rem; margin-bottom: 24px; font-weight: 800; letter-spacing: -2px; }
+        /* 1. CAMBIAMENTO HERO VISUAL (STRATEGY FOCUS) */
+        .hero-visual { background: linear-gradient(135deg, rgba(124,58,237,0.05) 0%, rgba(219,39,119,0.05) 100%); border-radius: var(--radius-lg); padding: 20px; border: 1px solid rgba(124,58,237,0.1); box-shadow: var(--shadow-glow); }
+        .visual-inner { background: white; border-radius: var(--radius-md); height: 400px; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
+        .strategy-dot { position: absolute; padding: 10px 16px; background: white; border: 1px solid #e2e8f0; border-radius: 12px; font-size: 0.75rem; font-weight: 700; box-shadow: 0 4px 12px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 8px; }
+
+        /* --- SELECTED WORK --- */
+        .portfolio { padding: 100px 0; }
+        .bento-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px; }
+        .project-card { background: white; border-radius: var(--radius-lg); overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.03); transition: transform 0.45s cubic-bezier(.2,.9,.2,1), box-shadow 0.45s; transform: translateZ(0); }
+        .project-card:hover { transform: translateY(-18px) rotateX(3deg); box-shadow: 0 30px 60px rgba(0,0,0,0.12); }
+        .card-img {  width: 100%; height: 300px; background: #f1f5f9; }
+        .card-img img {width: 100%;
+  height: 100%;
+  object-fit: cover;}
+        .card-content { padding: 32px; background-color: #f1f5f9; }
+        .card-tag { font-size: 0.7rem; font-weight: 700; color: var(--color-primary); background: var(--color-primary-light); padding: 4px 12px; border-radius: 999px; text-transform: uppercase; }
+
+/* 2. CAMBIAMENTO PROCESS (FULL-WIDTH VIBRANT DESIGN) */
+.process { 
+    padding: 120px 0; 
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    /* Gradiente più vivace e dinamico */
+    background: linear-gradient(135deg, #f5f3ff 0%, #fdf2f8 100%);
+    overflow: hidden;
+}
+
+/* Decorative blobs (now elements) */
+.process .blob1,
+.process .blob2 {
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    filter: blur(120px);
+    z-index: 1;
+    opacity: 0.15;
+    pointer-events: none;
+}
+.process .blob1 { background: var(--color-primary); top: -100px; left: -100px; }
+.process .blob2 { background: #db2777; bottom: -100px; right: -100px; }
+
+/* White gradient fades at the top and bottom to visually match adjacent sections */
+.process::before,
+.process::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 110px;
+    z-index: 2;
+    pointer-events: none;
+}
+.process::before { top: 0; background: linear-gradient(to bottom, #FCF9FE 0%, rgba(255,255,255,0) 100%); }
+.process::after { bottom: 0; background: linear-gradient(to top, #FCF9FE 0%, rgba(255,255,255,0) 100%); }
+
+.process .container { position: relative; z-index: 3; }
+
+.process-grid { 
+    display: grid; 
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 24px; 
+    margin-top: 80px; 
+}
+
+.step-card { 
+    /* Effetto vetro più nitido */
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    padding: 48px 32px; 
+    border-radius: 40px; 
+    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.step-card:hover { 
+    transform: translateY(-15px);
+    background: white;
+    box-shadow: 0 40px 80px rgba(124, 58, 237, 0.12);
+    border-color: white;
+}
+
+.step-icon { 
+    width: 64px; height: 64px; 
+    background: white;
+    color: var(--color-primary); 
+    border-radius: 20px; 
+    display: flex; align-items: center; justify-content: center; 
+    margin-bottom: 28px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    transition: all 0.4s ease;
+}
+
+.step-card:hover .step-icon { 
+    background: var(--color-primary);
+    color: white;
+    transform: scale(1.1) rotate(-8deg);
+}
+
+.step-badge {
+    display: inline-block;
+    padding: 6px 16px;
+    background: rgba(124, 58, 237, 0.1);
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+}
+        /* --- ABOUT --- */
+        .about { padding: 80px 0; }
+        .about-card { background: white; border-radius: 48px; padding: 60px 10px; display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 60px; align-items: start; }
+        .profile-img { width: 100%; height: 500px; background: #e2e8f0; border-radius: var(--radius-md); object-fit: cover; box-shadow: var(--shadow-lg); }
+        .about-buttons { margin-top: 32px; display: flex; gap: 16px; }
+        .canva-badge { display: inline-flex; align-items: flex-start; gap: 12px; background: #f0f9ff; color: #0369a1; padding: 20px; border-radius: var(--radius-sm); border-left: 4px solid #0ea5e9; margin-top: 24px; font-size: 0.9rem; font-weight: 500; }
+        /* --- FOOTER POP-UP --- */
+        .contact { background: var(--color-primary); color: white; padding: 100px 0; text-align: center; border-radius: 50px 50px 0 0; margin: 0 10px; }
+        .contact h2 { font-size: 4rem; margin-bottom: 24px; color: white; }
+        .footer-btns { display: flex; justify-content: center; gap: 16px; margin-bottom: 60px; }
+
+        /* Hero CTA spacing */
+        .hero-ctas { margin-top: 32px; display: flex; gap: 16px; }
+
+        @media (max-width: 1024px) {
+            .hero-grid, .bento-grid, .process-grid, .about-card { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 3.5rem; }
+        }
+        /* Mobile navbar and further responsive tweaks */
+        .nav-toggle { display: none; background: transparent; border: none; cursor: pointer; width: 44px; height: 44px; align-items: center; justify-content: center; border-radius: 10px; }
+        .nav-toggle svg { width: 22px; height: 22px; color: #000; }
+        .mobile-menu { display: none; position: absolute; top: calc(100% + 10px); left: 0; right: 0; margin: 0 auto; max-width: 1000px; background: rgba(255,255,255,0.85); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); padding: 12px; border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); flex-direction: column; gap: 8px; z-index: 120; }
+        .nav-content.open .mobile-menu { display: flex; }
+        .mobile-menu a { display: block; padding: 10px 14px; border-radius: 10px; font-weight: 700; color: var(--color-text-main); }
+        .mobile-menu .btn { color: #fff !important; background: #000 !important; }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .nav-toggle { display: inline-flex; }
+            .nav-content { padding: 8px 12px; max-width: 980px; }
+            .nav-content .btn { display: none; }
+
+            .container { padding: 0 16px; }
+            .hero { padding-top: 70px; }
+            .hero h1 { font-size: 2rem; }
+            .hero-visual { padding: 12px; }
+            .visual-inner { height: 280px; }
+            .card-img { height: 200px; }
+            .profile-img { height: auto; max-height: 360px; }
+            .process-grid { gap: 24px; }
+            .bento-grid { grid-template-columns: 1fr; gap: 18px; }
+            .project-card { transform: none; }
+        }
+
+        /* Process section mobile / spacing fixes */
+        @media (max-width: 768px) {
+            .process { padding: 60px 0; }
+            .process::before, .process::after { width: 320px; height: 320px; filter: blur(80px); }
+            .step-card { padding: 28px 20px; border-radius: 24px; }
+            .step-icon { width: 48px; height: 48px; margin-bottom: 18px; }
+            .step-badge { padding: 6px 12px; font-size: 0.75rem; }
+            .process-grid { margin-top: 40px; grid-template-columns: 1fr; }
+            .process h2 { font-size: 2rem; }
+        }
+
+.ticker-container {
+    width: 100%;
+    overflow: hidden;
+    background: transparent; /* Sfondo trasparente come richiesto */
+    padding: 40px 0;
+    display: flex;
+    white-space: nowrap;
+    position: relative;
+}
+
+.ticker-wrapper {
+    display: flex;
+    align-items: center;
+    animation: ticker-scroll 40s linear infinite;
+}
+
+.ticker-item {
+    padding: 0 10px; /* Spazio tra le card */
+}
+
+.ticker-item span {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 24px;
+    background: white; /* Stile card */
+    border: 1px solid #e2e8f0; /* Grigio chiaro */
+    border-radius: 100px; /* Arrotondato ma non pillola totale */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: #475569; /* Grigio fumo */
+    transition: all 0.3s ease;
+}
+
+/* Colore Azzurrino per l'icona e hover */
+.ticker-item span i {
+    width: 18px;
+    height: 18px;
+    color: #64748b; /* Azzurro grigiastro (Slate 500) */
+}
+
+.ticker-item:hover span {
+    border-color: #cbd5e1;
+    transform: translateY(-3px);
+    background: #f8fafc; /* Un tocco di azzurrino chiarissimo al passaggio */
+    color: var(--color-text-main);
+}
+
+@keyframes ticker-scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
+/* Fade laterali per la trasparenza */
+.ticker-container::before, .ticker-container::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    width: 100px;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none;
+}
+.ticker-container::before { left: 0; background: linear-gradient(to right, var(--color-bg), transparent); }
+.ticker-container::after { right: 0; background: linear-gradient(to left, var(--color-bg), transparent); }
+    .logo { font-size: 1.25rem; font-weight: 700; color:black; display: flex; align-items: center; gap: 4px; }
+    
+    /* Fix overflow orizzontale su mobile (senza cambiare stile) */
+@media (max-width: 768px){
+  /* Evita che il full-bleed 100vw crei scroll laterale */
+  .process{
+    width: 100% !important;
+    left: 0 !important;
+    right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  /* Extra safety: eventuali pseudo-elementi/blobs non devono spingere fuori */
+  .process,
+  .ticker-container{
+    overflow-x: clip;
+  }
+}
+
+/* ===========================
+   MOBILE OVERRIDES
+   - H2 38px SOLO su mobile
+   - Padding laterale sezioni 10px SOLO su mobile
+=========================== */
+@media (max-width: 768px){
+
+  /* Tutti gli H2 a 38px su mobile (anche quelli con inline style) */
+  h2{
+    font-size: 38px !important;
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+  }
+
+  /* Tutte le sezioni con padding laterale 10px su mobile */
+  section{
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+
+  /* Coerenza: anche il container a 10px (altrimenti resta 16px nel tuo CSS) */
+  .container{
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+}
+
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="nav-content">
+            <div class="logo">Sara Cantagallo<span style="">.</span></div>
+            <button class="nav-toggle" aria-expanded="false" aria-controls="mobile-menu"><i data-lucide="menu"></i></button>
+            <div class="nav-links">
+                <a href="#work">Work</a>
+                <a href="#process">Process</a>
+                <a href="#about">About</a>
+                <a href="resume">Resume</a>
+            </div>
+            <div id="mobile-menu" class="mobile-menu" role="menu" aria-hidden="true">
+                <a href="#work" role="menuitem">Work</a>
+                <a href="#process" role="menuitem">Process</a>
+                <a href="#about" role="menuitem">About</a>
+                <a href="#" role="menuitem">Resume</a>
+                <a href="#contact" class="btn btn-black" style="padding:8px 14px; display:inline-block; text-align:center;">Let's Talk</a>
+            </div>
+            <a href="#contact" class="btn btn-black" style="padding: 10px 24px;">Let's Talk</a>
+        </div>
+        
+    </nav>
+
+    <section class="hero container">
+        <div class="reveal hero-grid">
+            <div class="hero-text">
+                <span class="hero-label">UX Strategy & High-Conversion Design</span>
+                <h1>I build digital products that<br><span class="text-gradient">actually work.</span></h1>
+                <p>Most designs are just decorations. I combine cognitive psychology with robust No-Code architecture to build interfaces that drive revenue and eliminate user friction.</p>
+                <div class="hero-ctas">
+                    <a href="#work" class="btn btn-black">Selected Work</a>
+                    <a href="#contact" class="btn btn-outline">Contact Me</a>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="visual-inner">
+                    <div class="strategy-dot" style="top:40%; left:35%; background: var(--color-primary); color:white; border:none; z-index:10;"><i data-lucide="target"></i> Goals</div>
+                    <div class="strategy-dot" style="top:20%; left:10%;"><i data-lucide="users"></i> Personas</div>
+                    <div class="strategy-dot" style="top:25%; left:60%;"><i data-lucide="search"></i> Data</div>
+                    <div class="strategy-dot" style="top:70%; left:15%;"><i data-lucide="map"></i> Journey</div>
+                    <svg width="100%" height="100%" style="position:absolute; opacity:0.1;"><line x1="20%" y1="25%" x2="40%" y2="45%" stroke="black"/><line x1="70%" y1="30%" x2="45%" y2="45%" stroke="black"/><line x1="25%" y1="70%" x2="40%" y2="50%" stroke="black"/></svg>
+                </div>
+            </div>
+            </div>
+        </div>
+    </section>
+<div class="ticker-container">
+    <div class="ticker-wrapper">
+        <div class="ticker-item"><span><i data-lucide="figma"></i> Figma</span></div>
+        <div class="ticker-item"><span><i data-lucide="layout"></i> Webflow</span></div>
+        <div class="ticker-item"><span><i data-lucide="framer"></i> Framer</span></div>
+        <div class="ticker-item"><span><i data-lucide="code-2"></i> HTML5/CSS3</span></div>
+        <div class="ticker-item"><span><i data-lucide="brain-circuit"></i> UX Strategy</span></div>
+        <div class="ticker-item"><span><i data-lucide="search"></i> Competitor Analysis</span></div>
+        <div class="ticker-item"><span><i data-lucide="users"></i> Buyer Personas</span></div>
+        <div class="ticker-item"><span><i data-lucide="Zap"></i> No-Code Architecture</span></div>
+        
+        <div class="ticker-item"><span><i data-lucide="figma"></i> Figma</span></div>
+        <div class="ticker-item"><span><i data-lucide="layout"></i> Webflow</span></div>
+        <div class="ticker-item"><span><i data-lucide="framer"></i> Framer</span></div>
+        <div class="ticker-item"><span><i data-lucide="code-2"></i> HTML5/CSS3</span></div>
+        <div class="ticker-item"><span><i data-lucide="brain-circuit"></i> UX Strategy</span></div>
+        <div class="ticker-item"><span><i data-lucide="search"></i> Competitor Analysis</span></div>
+        <div class="ticker-item"><span><i data-lucide="users"></i> Buyer Personas</span></div>
+        <div class="ticker-item"><span><i data-lucide="Zap"></i> No-Code Architecture</span></div>
+    </div>
+</div>
+</div>
+    <section id="work" class="portfolio container">
+        <div class="reveal" style="margin-bottom: 60px;">
+            <h2 style="font-size:3rem;">Selected Work</h2>
+            <p style="color:var(--color-text-muted)">Four projects that show how I approach UX, UI, and implementation.</p>
+        </div>
+        <div class="bento-grid">
+            <a href="afous-essence.html"><article class="project-card reveal">
+                <div class="card-img"><img src="img/afous-essence-ux-research.png"></div>
+                <div class="card-content">
+                    <span class="card-tag">UX Research & Strategy</span>
+                    <h3 style="margin:12px 0;">Strategic Architecture</h3>
+                    <p style="color:var(--color-text-muted); font-size:0.95rem;">Before the UI, comes the logic. I built Afous Essence from the ground up, merging brand identity with a rigorous UX strategy. By mapping user intent through research and information architecture, I engineered a high-conversion journey that prioritizes a seamless path to purchase.</p>
+                </div>
+            </article></a>
+            <a href="zara-home-audit.html"><article class="project-card reveal">
+                <div class="card-img"><img src="file-pf/before-after.png"></div>
+                <div class="card-content">
+                    <span class="card-tag">UX Research & UI Strategy</span>
+                    <h3 style="margin:12px 0;">Balancing Aesthetics and Conversion</h3>
+                    <p style="color:var(--color-text-muted); font-size:0.95rem;">A critical analysis of the Zara Home e-commerce ecosystem. I identified friction points where the "magazine-style" UI compromised usability, providing architectural solutions that protect the brand's high-fashion DNA while optimizing the user journey for conversion.</p>
+                </div>
+            </article></a>
+            <a href="stitch-and-style.html"><article class="project-card reveal">
+                <div class="card-img"><img src="file-pf/design-stitch-and-style.png"></div>
+                <div class="card-content">
+                    <span class="card-tag">Visual Design & Art Direction</span>
+                    <h3 style="margin:12px 0;">High-Fashion Digital Presence</h3>
+                    <p style="color:var(--color-text-muted); font-size:0.95rem;">A conceptual restyling of a luxury retail platform. I challenged the boundaries of standard e-commerce layouts to create a high-impact visual identity, focusing on editorial typography and sophisticated spacing without sacrificing core functional logic.</p>
+                </div>
+            </article></a>
+            <a href="staybnb.html"><article class="project-card reveal">
+                <div class="card-img"><img src="file-pf/ta-r.png"></div>
+                <div class="card-content">
+                    <span class="card-tag">Front-end Development</span>
+                    <h3 style="margin:12px 0;">Responsive Architecture from Scratch</h3>
+                    <p style="color:var(--color-text-muted); font-size:0.95rem;">A multi-page implementation focused on clean, semantic code. I built a responsive travel interface using pure HTML and CSS to master layout fluidity and modern browser behaviors, ensuring a seamless experience across all screen sizes.</p>
+                </div>
+            </article></a>
+        </div>
+    </section>
+
+    <section id="process" class="process">
+        <div class="blob1" aria-hidden="true"></div>
+        <div class="blob2" aria-hidden="true"></div>
+    <div class="container">
+    <div class="reveal" style="text-align: center;">
+        <span class="hero-label">Methodology</span>
+        <h2 style="font-size:3.5rem; margin-top: 15px;">Adaptive Framework</h2>
+        <p style="color:var(--color-text-muted); max-width: 600px; margin: 20px auto 0;">
+            Strategic design isn't a linear path. I adapt my workflow to your business stage to maximize impact and ROI.
+        </p>
+    </div>
+
+    <div class="process-grid">
+        <div class="step-card reveal">
+            <span class="step-badge">Phase 01 — Analysis</span>
+            <div class="step-icon" aria-hidden="true"><i data-lucide="trending-up"></i></div>
+            <h3 style="margin-bottom:12px;">Strategic Genesis</h3>
+            <p style="color:var(--color-text-muted); font-size: 0.95rem; line-height: 1.5;">
+                Deep-dive into competitor landscapes and user psychology to build a UX Manifesto that guides every future design choice.
+            </p>
+        </div>
+
+        <div class="step-card reveal" style="transition-delay: 0.1s;">
+            <span class="step-badge">Phase 02 — Optimization</span>
+            <div class="step-icon"><i data-lucide="refresh-cw"></i></div>
+            <h3 style="margin-bottom:12px;">Product Evolution</h3>
+            <p style="color:var(--color-text-muted); font-size: 0.95rem; line-height: 1.5;">
+                Heuristic audits and friction-point mapping. We don't just "fix" screens; we re-engineer the flow to boost conversions.
+            </p>
+        </div>
+
+        <div class="step-card reveal" style="transition-delay: 0.2s;">
+            <span class="step-badge">Phase 03 — Launch</span>
+            <div class="step-icon"><i data-lucide="rocket"></i></div>
+            <h3 style="margin-bottom:12px;">Hi-Fi Prototyping</h3>
+            <p style="color:var(--color-text-muted); font-size: 0.95rem; line-height: 1.5;">
+                Direct move to high-fidelity architecture. Rapid validation of aesthetics and logic to get your product to market faster.
+            </p>
+        </div>
+    </div>
+    </div>
+</section>
+
+    <section id="about" class="container about">
+        <div class="about-card reveal">
+            <div class="profile-container">
+                <img src="file-pf/s22.png" alt="Sara" class="profile-img">
+                
+            </div>
+            <div>
+                <h2 style="font-size:3rem; margin-bottom:1.5rem;">Strategist & Designer.</h2>
+                <p style="font-size:1.15rem; color:var(--color-text-muted); margin-bottom:1.5rem;">
+                    I merge psychology, marketing, and design to create products that don't just look good—they perform. 
+                </p>
+                <p style="color:var(--color-text-muted);">
+                    I master the tools that bridge the gap between idea and market, ensuring every choice is intentional and data-driven.
+                </p>
+                <div class="canva-badge">
+                    <i data-lucide="award"></i>
+                    <span><strong>Recognition:</strong> A deep-dive article I authored for my agency was recognized by a <strong>Canva Ambassador</strong>, leading to an official partnership and a premium platform sponsorship for the firm.</span>
+                </div>
+
+                <div class="about-buttons">
+                    <!-- ✅ Removed: View My Story -->
+                    <!-- ✅ Resume now uses the same style as the removed button (btn-black), keeping the icon -->
+                    <button class="btn btn-black"><i data-lucide="download"></i> Resume</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="contact reveal">
+        <div class="container">
+            <h2>Let's build the future.</h2>
+            <p style="margin-bottom: 40px;">Ready to turn your vision into a conversion machine?</p>
+            <div class="footer-btns">
+                <a href="mailto:your@email.com" class="btn btn-white"><i data-lucide="mail"></i> Email Me</a>
+                <a href="#" class="btn btn-footer-outline"><i data-lucide="linkedin"></i> LinkedIn</a>
+            </div>
+            <footer style="opacity: 0.6; font-size: 0.9rem;">
+                &copy; 2026 Sara Cantagallo. Logic-driven Design.
+            </footer>
+        </div>
+    </section>
+
+    <script>
+        lucide.createIcons();
+        const navToggle = document.querySelector('.nav-toggle');
+        const navContent = document.querySelector('.nav-content');
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (navToggle && navContent && mobileMenu) {
+            navToggle.addEventListener('click', () => {
+                const open = navContent.classList.toggle('open');
+                navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+                mobileMenu.setAttribute('aria-hidden', open ? 'false' : 'true');
+            });
+            mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+                navContent.classList.remove('open');
+                navToggle.setAttribute('aria-expanded','false');
+                mobileMenu.setAttribute('aria-hidden','true');
+            }));
+            document.addEventListener('click', (e) => {
+                if (!navContent.contains(e.target) && navContent.classList.contains('open')) {
+                    navContent.classList.remove('open');
+                    navToggle.setAttribute('aria-expanded','false');
+                    mobileMenu.setAttribute('aria-hidden','true');
+                }
+            });
+        }
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('.nav-content');
+            if (window.scrollY > 40) nav.classList.add('scrolled');
+            else nav.classList.remove('scrolled');
+        });
+    </script>
+</body>
+</html>

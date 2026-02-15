@@ -1,0 +1,1486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zara Home UX/UI Audit + Restyling | Case Study</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root{
+      --font-display:'Outfit',sans-serif;
+      --font-body:'Inter',sans-serif;
+
+      --color-bg:#F9FAFB;
+      --color-card:#ffffff;
+      --color-text-main:#0f172a;
+      --color-text-muted:#64748b;
+
+      --color-primary:#7c3aed;
+      --color-primary-light:#ede9fe;
+
+      --border:#e2e8f0;
+
+      --radius-lg:32px;
+      --radius-md:24px;
+      --radius-sm:12px;
+
+      --shadow-lg:0 20px 25px -5px rgb(0 0 0 / 0.1);
+      --shadow-soft:0 10px 25px rgba(15,23,42,0.08);
+      --shadow-glow:0 25px 50px -12px rgba(124,58,237,0.25);
+    }
+
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{
+      font-family:var(--font-body);
+      background:var(--color-bg);
+      color:var(--color-text-main);
+      line-height:1.6;
+      overflow-x:hidden;
+    }
+    h1,h2,h3,h4{font-family:var(--font-display);line-height:1.1;}
+    a{text-decoration:none;color:inherit;}
+    img,svg,video,canvas{max-width:100%;height:auto;}
+
+    .container{max-width:1200px;margin:0 auto;padding:0 24px;}
+    .reveal{opacity:0;transform:translateY(30px);transition:all 0.8s ease-out;}
+    .reveal.active{opacity:1;transform:translateY(0);}
+    .text-gradient{
+      background:linear-gradient(to right,#7c3aed,#db2777);
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+    }
+
+    /* ===== Buttons ===== */
+    .btn{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:14px 22px;border-radius:999px;
+      font-size:0.95rem;font-weight:600;
+      transition:all .3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      cursor:pointer;border:none;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .btn-black{
+      background:#000;
+      color:#fff !important; /* ✅ always white */
+    }
+    .btn-outline{background:transparent;border:1px solid var(--border);color:var(--color-text-main);}
+    .btn:hover{
+      background-color:var(--color-primary);
+      color:#fff !important;
+      transform:translateY(-5px);
+      box-shadow:0 12px 24px rgba(124, 58, 237, 0.3);
+    }
+
+    /* ===== Nav (glass) ===== */
+    nav{
+      position:fixed;top:20px;left:0;right:0;
+      z-index:1000;
+      display:flex;justify-content:center;
+      padding:0 12px;
+    }
+    .nav-content{
+      background:rgba(255,255,255,0.3);
+      backdrop-filter:blur(8px);
+      -webkit-backdrop-filter:blur(8px);
+      border:1px solid rgba(255,255,255,0.2);
+      padding:10px 32px;
+      border-radius:999px;
+      display:flex;align-items:center;justify-content:space-between;
+      width:100%;
+      max-width:1000px;
+      transition:all 0.5s ease;
+      position:relative;
+      margin:0 auto;
+    }
+    .nav-content.scrolled{
+      background:rgba(255,255,255,0.7);
+      backdrop-filter:blur(25px) saturate(180%);
+      -webkit-backdrop-filter:blur(25px) saturate(180%);
+      border:1px solid rgba(255,255,255,0.4);
+      transform:translateY(-5px);
+      box-shadow:0 15px 35px rgba(0,0,0,0.08);
+    }
+
+    .back-home{
+      display:flex;align-items:center;gap:8px;
+      color:var(--color-primary) !important;
+      font-weight:800;
+      font-size:0.9rem;
+      transition:transform .3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .back-home:hover{transform:translateY(-4px);}
+
+    .nav-links{display:flex;gap:28px;align-items:center;}
+    .nav-links a{
+      font-size:0.9rem;font-weight:600;
+      color:#000 !important;
+      position:relative;
+      padding:4px 0;
+      transition:transform .3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      display:inline-block;
+    }
+    .nav-links a:hover{transform:translateY(-4px);}
+
+    /* ✅ ensure CTA text is always white */
+    .nav-links .btn,
+    .mobile-menu .btn{
+      color:#fff !important;
+    }
+
+    .nav-links a:not(.btn)::after{
+      content:'';
+      position:absolute;width:100%;height:2px;bottom:-2px;left:0;
+      background-color:var(--color-primary);
+      transform:scaleX(0);
+      transition:transform .3s ease;
+    }
+    .nav-links a:not(.btn):hover::after{transform:scaleX(1);}
+
+    .nav-toggle{
+      display:none;background:transparent;border:none;cursor:pointer;
+      width:44px;height:44px;align-items:center;justify-content:center;border-radius:10px;
+    }
+    .nav-toggle svg{width:22px;height:22px;color:#000;}
+
+    .mobile-menu{
+      display:none;
+      position:absolute;
+      top:calc(100% + 10px);
+      left:0;right:0;margin:0 auto;
+      max-width:1000px;
+      background:rgba(255,255,255,0.85);
+      backdrop-filter:blur(10px);
+      -webkit-backdrop-filter:blur(10px);
+      padding:12px;border-radius:14px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.08);
+      flex-direction:column;gap:8px;
+      z-index:120;
+    }
+    .nav-content.open .mobile-menu{display:flex;}
+    .mobile-menu a{
+      display:block;padding:10px 14px;border-radius:10px;
+      font-weight:700;color:var(--color-text-main);
+    }
+    .mobile-menu a:hover{background:rgba(124,58,237,0.08);}
+    .mobile-menu .btn{background:#000 !important;justify-content:center;padding:10px 14px;}
+
+    /* ===== Layout blocks ===== */
+    .hero{
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      padding-top:90px;
+    }
+    .hero-grid{
+      display:grid;
+      grid-template-columns:1.2fr 0.8fr;
+      gap:64px;
+      align-items:center;
+    }
+    .hero h1{
+      font-size:4.3rem;
+      margin:16px 0 20px;
+      font-weight:800;
+      letter-spacing:-2px;
+    }
+    .tag-pill{
+      display:inline-block;
+      padding:6px 16px;
+      background:var(--color-primary-light);
+      border-radius:999px;
+      font-size:0.75rem;
+      font-weight:800;
+      color:var(--color-primary);
+      text-transform:uppercase;
+      letter-spacing:1px;
+    }
+    .hero-meta{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:18px;
+      margin-top:26px;
+      padding-top:18px;
+      border-top:1px solid #eef2f6;
+    }
+    .meta-k{
+      font-size:0.78rem;
+      color:var(--color-primary);
+      font-weight:800;
+      letter-spacing:1px;
+      text-transform:uppercase;
+      margin-bottom:4px;
+    }
+    .meta-v{font-size:0.9rem;font-weight:700;color:#0b1220;}
+
+    .hero-visual{
+      background:linear-gradient(135deg, rgba(124,58,237,0.05) 0%, rgba(219,39,119,0.05) 100%);
+      border-radius:var(--radius-lg);
+      padding:18px;
+      border:1px solid rgba(124,58,237,0.1);
+      box-shadow:var(--shadow-glow);
+    }
+    .visual-inner{
+      background:#fff;
+      border-radius:var(--radius-md);
+      height:420px;
+      overflow:hidden;
+      position:relative;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border:1px solid var(--border);
+    }
+    .hero-visual-img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+    .visual-inner::after{
+      content:"";
+      position:absolute;inset:0;
+      background:linear-gradient(180deg, rgba(15,23,42,0.0) 55%, rgba(15,23,42,0.10) 100%);
+      pointer-events:none;
+    }
+    .zoom-hint{
+      position:absolute;
+      left:14px;
+      bottom:14px;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,0.88);
+      border:1px solid rgba(15,23,42,0.08);
+      font-weight:800;
+      font-size:0.82rem;
+      color:#0b1220;
+      box-shadow:0 12px 22px rgba(15,23,42,0.12);
+      backdrop-filter:blur(8px);
+      -webkit-backdrop-filter:blur(8px);
+    }
+
+    .section-padding{padding:100px 0;border-bottom:1px solid #eef2f6;}
+    .section-head{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:18px;
+      margin-bottom:18px;
+    }
+    .section-head h2{font-size:2.6rem;}
+    .lead{
+      max-width:920px;
+      font-size:1.06rem;
+      color:var(--color-text-muted);
+      margin-top:12px;
+    }
+
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start;}
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:22px;}
+    .grid-2 > *, .grid-3 > *{min-width:0;}
+
+    .content-card{
+      background:var(--color-card);
+      border:1px solid var(--border);
+      border-radius:var(--radius-lg);
+      padding:34px;
+      box-shadow:0 4px 12px rgba(0,0,0,0.03);
+    }
+    .card-title{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+    .card-title h3{font-size:1.25rem;}
+    .muted{color:var(--color-text-muted);}
+    .list{
+      list-style:none;
+      margin-top:18px;
+      display:grid;
+      gap:12px;
+    }
+    .list li{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      padding:12px 14px;
+      border-radius:18px;
+      background:#f8fafc;
+      border:1px solid #eef2f6;
+    }
+    .list strong{font-weight:800;}
+    .callout{
+      margin-top:18px;
+      padding:16px;
+      border-radius:18px;
+      background:rgba(124,58,237,0.06);
+      border:1px solid rgba(124,58,237,0.12);
+    }
+
+    /* Stats */
+    .stat{
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:18px;
+    }
+    .stat .value{
+      font-family:var(--font-display);
+      font-weight:800;
+      letter-spacing:-1px;
+      font-size:2rem;
+    }
+    .stat .label{color:var(--color-text-muted);font-size:0.9rem;margin-top:4px;}
+    .stat .note{color:var(--color-text-muted);font-size:0.85rem;margin-top:10px;}
+
+    /* Table */
+    .table-wrap{
+      max-width:100%;
+      overflow-x:auto;
+      -webkit-overflow-scrolling:touch;
+      border-radius:18px;
+      border:1px solid var(--border);
+      margin-top:14px;
+      background:#fff;
+    }
+    table{border-collapse:collapse;width:100%;min-width:820px;}
+    th,td{padding:14px;text-align:left;font-size:0.92rem;}
+    thead th{background:#f8fafc;font-weight:800;}
+    tbody td{border-top:1px solid #eef2f6;}
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:#fff;
+      border:1px solid var(--border);
+      font-weight:800;
+      font-size:0.85rem;
+    }
+
+    /* Prototypes */
+    .proto-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:18px;
+      margin-top:18px;
+    }
+    .proto{
+      border-radius:22px;
+      overflow:hidden;
+      border:1px solid var(--border);
+      background:#fff;
+      box-shadow:var(--shadow-soft);
+      cursor:zoom-in;
+    }
+    .proto img{display:block;width:100%;height:auto;}
+    .proto-cap{
+      padding:12px 14px;
+      border-top:1px solid #eef2f6;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+    }
+    .proto-cap span{font-weight:800;}
+    .proto-cap small{color:var(--color-text-muted);font-weight:700;}
+
+    /* === NEW: “Make analysis less boring” visual blocks === */
+    .audit-visuals{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:14px;
+      margin-top:16px;
+    }
+    .audit-shot{
+      border-radius:22px;
+      overflow:hidden;
+      border:1px solid var(--border);
+      background:#fff;
+      cursor:zoom-in;
+      box-shadow:0 10px 25px rgba(15,23,42,0.08);
+      position:relative;
+    }
+    .audit-shot img{display:block;width:100%;height:auto;}
+    .audit-badge{
+      position:absolute;
+      top:12px;left:12px;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 10px;
+      border-radius:999px;
+      background:rgba(255,255,255,0.92);
+      border:1px solid rgba(15,23,42,0.08);
+      font-weight:800;
+      font-size:0.82rem;
+      color:#0b1220;
+      backdrop-filter:blur(8px);
+      -webkit-backdrop-filter:blur(8px);
+    }
+    .audit-notes{
+      margin-top:12px;
+      padding:12px 14px;
+      border-radius:18px;
+      background:#f8fafc;
+      border:1px solid #eef2f6;
+      color:var(--color-text-muted);
+      font-size:0.92rem;
+    }
+
+    /* Footer CTA */
+    .contact{
+      background:var(--color-primary);
+      color:#fff;
+      padding:100px 0;
+      text-align:center;
+      border-radius:50px 50px 0 0;
+      margin:0 20px;
+      border-bottom:none;
+    }
+    .contact h2{font-size:3.5rem;margin-bottom:18px;color:#fff;}
+    .footer-btns{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin-top:18px;}
+    .btn-white{background:#fff;color:var(--color-primary);}
+    .btn-footer-outline{background:transparent;border:1px solid rgba(255,255,255,0.3);color:#fff;}
+
+    /* ===== Lightbox ===== */
+    .lb-overlay{
+      position:fixed;inset:0;
+      background:rgba(15,23,42,0.82);
+      backdrop-filter:blur(6px);
+      -webkit-backdrop-filter:blur(6px);
+      z-index:2000;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+    }
+    .lb-overlay.is-open{display:flex;}
+    .lb-dialog{
+      width:min(1100px, 96vw);
+      max-height:92vh;
+      background:rgba(255,255,255,0.06);
+      border:1px solid rgba(255,255,255,0.18);
+      border-radius:22px;
+      box-shadow:0 20px 60px rgba(0,0,0,0.35);
+      overflow:hidden;
+      position:relative;
+      transform:translateY(6px);
+      animation:lbIn 180ms ease-out forwards;
+    }
+    @keyframes lbIn{to{transform:translateY(0);}}
+    .lb-topbar{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding:12px 14px;
+      background:rgba(255,255,255,0.08);
+      border-bottom:1px solid rgba(255,255,255,0.12);
+    }
+    .lb-title{font-size:0.9rem;font-weight:800;color:rgba(255,255,255,0.92);}
+    .lb-close{
+      display:inline-flex;align-items:center;justify-content:center;
+      width:38px;height:38px;border-radius:999px;
+      border:1px solid rgba(255,255,255,0.2);
+      background:rgba(255,255,255,0.08);
+      cursor:pointer;
+      transition:transform 0.2s ease;
+    }
+    .lb-close:hover{transform:translateY(-2px);}
+    .lb-body{background:rgba(255,255,255,0.02);padding:14px;}
+    .lb-img{
+      width:100%;
+      height:auto;
+      max-height:calc(92vh - 92px);
+      object-fit:contain;
+      display:block;
+      border-radius:16px;
+      background:#0b1220;
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width:1024px){
+      .hero-grid,.grid-2,.grid-3{grid-template-columns:1fr;}
+      .hero h1{font-size:3.1rem;}
+      .visual-inner{height:340px;}
+      table{min-width:720px;}
+      .audit-visuals{grid-template-columns:1fr;}
+    }
+    @media (max-width:768px){
+      .container{padding:0 16px;}
+      .nav-links{display:none;}
+      .nav-toggle{display:inline-flex;}
+      .nav-content{padding:8px 12px;max-width:980px;}
+      .hero{padding-top:140px;}
+      .hero h1{font-size:40px;letter-spacing:-1px;}
+      .visual-inner{height:260px;}
+      .section-padding{padding:56px 0;}
+      .content-card{padding:20px 16px;}
+      .hero-meta{grid-template-columns:1fr;gap:12px;}
+      .proto-grid{grid-template-columns:1fr;}
+      .contact{margin:0 10px;border-radius:34px 34px 0 0;}
+      .contact h2{font-size:2.4rem;}
+    }
+
+    /* ===== Audit Images Column (used in Key Issues) ===== */
+.audit-images-card{
+  padding: 22px;
+}
+
+.audit-images-grid{
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.audit-images-grid.two-up{
+  grid-template-columns: 1fr 1fr;
+}
+
+.audit-shot{
+  border-radius: 22px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: #fff;
+  cursor: zoom-in;
+  box-shadow: 0 10px 25px rgba(15,23,42,0.08);
+  position: relative;
+}
+
+.audit-shot img{
+  display:block;
+  width:100%;
+  height:auto;
+}
+
+.audit-badge{
+  position:absolute;
+  top:12px; left:12px;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 10px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.92);
+  border:1px solid rgba(15,23,42,0.08);
+  font-weight:800;
+  font-size:0.82rem;
+  color:#0b1220;
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+}
+
+.audit-notes{
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 18px;
+  background: #f8fafc;
+  border: 1px solid #eef2f6;
+  color: var(--color-text-muted);
+  font-size: 0.92rem;
+}
+
+/* Responsive: on desktop you can show 2-up grids inside the image column */
+@media (max-width: 1024px){
+  .audit-images-grid.two-up{ grid-template-columns: 1fr; }
+}
+
+.audit-images-grid.two-up {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.audit-shot {
+  position: relative;
+  height: 420px;          /* 👈 altezza uniforme */
+  overflow: hidden;
+  border-radius: 20px;
+}
+
+.audit-shot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;      /* 👈 riempie senza deformare */
+  display: block;
+}
+@media (max-width: 768px) {
+  .audit-images-grid.two-up {
+    grid-template-columns: 1fr;
+  }
+
+  .audit-shot {
+    height: 360px;
+  }
+}
+.device-tag{
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(124,58,237,0.08);
+  color: var(--color-primary);
+  margin-left: 6px;
+  vertical-align: middle;
+  letter-spacing: 0.2px;
+}
+
+.issue-icon {
+  width: 24px;          /* 👈 più grande */
+  height: 24px;
+  stroke-width: 2;      /* leggermente più marcata */
+  flex-shrink: 0;
+  margin-top: 4px;      /* allineamento verticale */
+}
+.proto-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.proto {
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+}
+
+.proto img {
+  width: 100%;
+  height: 480px;      /* 👈 stessa altezza per tutte */
+  object-fit: cover;  /* riempie senza deformare */
+  display: block;
+}
+
+.proto-cap {
+  padding: 12px 14px;
+  border-top: 1px solid #eef2f6;
+  background: #fff;
+}
+@media (max-width: 768px){
+  .proto-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .proto img {
+    height: 300px;
+  }
+}
+
+.proto-cap{
+  padding: 14px;
+  border-top: 1px solid #eef2f6;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.proto-top{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  
+}
+
+.proto-top span{
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.proto-btn{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(124,58,237,0.08);
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+
+.proto-btn:hover{
+  background: var(--color-primary);
+  color: #fff;
+  transform: translateY(-2px);
+}
+ a.proto-btn{
+  margin-left: 4px;
+ }
+@media(max-width: 768px){
+    section#prototypes{padding:56px 16px;
+}
+section.section-padding.container{
+    padding:56px 16px;}
+
+    @media (max-width: 768px) {
+  #prototypes .section-head .pill {
+    display: none;
+  }
+}
+@media (max-width:768px){
+
+  /* H2 SOLO MOBILE */
+  h2,
+  .section-head h2,
+  .contact h2{
+    font-size:38px;
+    letter-spacing:-.5px;
+  }
+
+  .hero h1{
+    font-size:clamp(34px,8vw,44px);
+    letter-spacing:-1px;
+  }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-content" id="navbar">
+      <button id="navToggle" class="nav-toggle" aria-expanded="false" aria-controls="mobileMenu">
+        <i data-lucide="menu"></i>
+      </button>
+
+      <!-- Adjust to your real home -->
+      <a class="back-home" href="index.html">
+        <i data-lucide="arrow-left" size="18"></i> BACK HOME
+      </a>
+
+      <div class="nav-links">
+        <a href="#overview">Overview</a>
+        <a href="#issues">Audit</a>
+        <a href="#solution">Solution</a>
+        <a href="#prototypes">Prototypes</a>
+        <a href="mailto:hello@saracantagallo.com" class="btn btn-black" style="padding:8px 14px;">Let's talk</a>
+      </div>
+
+      <div class="mobile-menu" id="mobileMenu">
+        <a href="#overview">Overview</a>
+        <a href="#issues">Audit</a>
+        <a href="#solution">Solution</a>
+        <a href="#prototypes">Prototypes</a>
+        <a href="mailto:hello@saracantagallo.com" class="btn btn-black">Let's talk</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO / OVERVIEW -->
+  <section id="overview" class="hero container">
+    <div class="reveal hero-grid">
+      <div class="hero-text">
+        <span class="tag-pill">Case Study · UX/UI Audit + Restyling</span>
+        <h1>Zara Home, with a UX that <span class="text-gradient">drives action.</span></h1>
+
+        <p class="lead" style="margin-top:0;">
+          Zara Home has a strong editorial identity (immersive photography, minimalism, storytelling),
+          but that choice can conflict with e-commerce needs: orientation, clarity, and conversion.
+          This work: a UX/UI audit and a redesign of <strong>Homepage</strong> + <strong>Product Page</strong>, on desktop and mobile.
+        </p>
+
+        <div class="hero-meta">
+          <div>
+            <div class="meta-k">Role</div>
+            <div class="meta-v">UX/UI Designer</div>
+          </div>
+          <div>
+            <div class="meta-k">Focus</div>
+            <div class="meta-v">Usability · Hierarchy · Conversion</div>
+          </div>
+          <div>
+            <div class="meta-k">Deliverables</div>
+            <div class="meta-v">Homepage + PDP (Desktop/Mobile)</div>
+          </div>
+        </div>
+
+        <div style="margin-top:26px;display:flex;gap:12px;flex-wrap:wrap;">
+          <a href="#issues" class="btn btn-black"><i data-lucide="search"></i> View the audit</a>
+          <a href="#prototypes" class="btn btn-outline"><i data-lucide="layout"></i> View prototypes</a>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="visual-inner">
+          <!-- Use your local paths (e.g., img/...) if needed -->
+          <img
+            class="hero-visual-img lightbox-trigger"
+            data-lightbox="zara-homepage-desktop.png"
+            src="file-pf/before-after-zh.png"
+            alt="Zara Home – Homepage restyling (Desktop)"
+            loading="eager"
+          />
+          <div class="zoom-hint"><i data-lucide="zoom-in"></i> Click to zoom</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHALLENGE -->
+  <section class="section-padding container">
+    <div class="reveal">
+      <div class="section-head">
+        <h2>The challenge</h2>
+        <span class="pill"><i data-lucide="alert-triangle"></i> Identity vs Conversion</span>
+      </div>
+
+      <p class="lead">
+        The experience communicates inspiration, but it doesn’t support action, orientation, and conversion enough:
+        CTAs are low-visibility, micro-interactions are weak, hierarchy feels flat, and too many elements share the same visual “weight”.
+      </p>
+
+      <div class="grid-3">
+        <div class="stat">
+          <div class="value">Low</div>
+          <div class="label">E-commerce clarity</div>
+          <div class="note">The homepage doesn’t clearly communicate what to do first.</div>
+        </div>
+        <div class="stat">
+          <div class="value">Weak</div>
+          <div class="label">Visual hierarchy</div>
+          <div class="note">Images, copy and modules compete — fewer anchors and priorities.</div>
+        </div>
+        <div class="stat">
+          <div class="value">Poor</div>
+          <div class="label">Discoverability</div>
+          <div class="note">Actions and expandable sections don’t look interactive.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AUDIT / ISSUES -->
+  <section id="issues" class="section-padding container">
+  <div class="reveal">
+    <span class="tag-pill">01 Audit</span>
+    <div class="section-head">
+      <h2>Key issues</h2>
+      <span class="pill"><i data-lucide="scan-eye"></i> Heuristics + UI signals</span>
+    </div>
+
+    <!-- ===== ROW 1: Homepage analysis (left) + Images (right) ===== -->
+    <div class="grid-2" style="margin-top:18px; align-items:start;">
+
+      <!-- LEFT: HOMEPAGE ANALYSIS (NO IMAGES) -->
+      <div class="content-card">
+        <div class="card-title">
+          <i data-lucide="home" color="var(--color-primary)"></i>
+          <h3>Homepage</h3>
+        </div>
+
+        <p class="muted">
+          The homepage feels editorial-first, but it doesn’t guide users. Navigation cues are subtle,
+          CTAs don’t stand out, and the content stack creates friction for shopping intent.
+        </p>
+
+        <ul class="list">
+          <li>
+            <i data-lucide="layers" color="var(--color-primary)"></i>
+            <div><strong>Flat hierarchy:</strong> too many elements compete → no clear priority.</div>
+          </li>
+          <li>
+            <i data-lucide="contrast" color="var(--color-primary)"></i>
+            <div><strong>Borderline contrast:</strong> text on detailed imagery reduces readability.</div>
+          </li>
+          <li>
+            <i data-lucide="mouse-pointer-2" color="var(--color-primary)"></i>
+            <div><strong>Weak affordances:</strong> hover states and feedback are barely noticeable.</div>
+          </li>
+          <li>
+            <i data-lucide="sparkles" color="var(--color-primary)"></i>
+            <div><strong>Early overload:</strong> hero + editorial content + utilities land all at once.</div>
+          </li>
+        </ul>
+
+        <div class="callout">
+          <strong style="display:block;margin-bottom:6px;">Core insight</strong>
+          <span class="muted">Inspiring is not enough: the page needs orientation and progressive disclosure.</span>
+        </div>
+      </div>
+
+      <!-- RIGHT: IMAGES (REPLACE PDP ANALYSIS HERE) -->
+      <div class="content-card audit-images-card">
+        <div class="card-title">
+          <i data-lucide="images" color="var(--color-primary)"></i>
+          <h3>Evidence (before → after)</h3>
+        </div>
+
+        <p class="muted">
+          Visual snapshots used to support the audit and highlight the redesign direction.
+          Click to zoom.
+        </p>
+
+        <!-- choose: one column OR two-up -->
+        <div class="audit-images-grid two-up">
+          <figure class="audit-shot lightbox-trigger" data-lightbox="zara-homepage-desktop.png" style="margin:0;">
+            <span class="audit-badge"><i data-lucide="monitor"></i> Homepage · Desktop</span>
+            <img src="img/zara-old-homepage-desktop.jpg" alt="Homepage prototype – desktop" />
+          </figure>
+
+          <figure class="audit-shot lightbox-trigger" data-lightbox="zara-homepage-mobile.png" style="margin:0;">
+            <span class="audit-badge"><i data-lucide="smartphone"></i> Homepage · Mobile</span>
+            <img src="img/zara-homepage-mobile-old.jpg" alt="Homepage prototype – mobile" />
+          </figure>
+        </div>
+
+        <div class="audit-notes">
+          Focus: clearer category entry points, more visible CTAs (“View all / Explore”), and stronger modular hierarchy.
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ===== ROW 2: Images (left) + PDP analysis (right) ===== -->
+    <div class="grid-2" style="margin-top:18px; align-items:start;">
+
+      <!-- LEFT: IMAGES -->
+      <div class="content-card audit-images-card">
+        <div class="card-title">
+          <i data-lucide="image" color="var(--color-primary)"></i>
+          <h3>PDP visuals</h3>
+        </div>
+
+        <p class="muted">
+          Product page snapshots supporting the issues and the new funnel clarity.
+          Click to zoom.
+        </p>
+
+        <div class="audit-images-grid two-up">
+          <figure class="audit-shot lightbox-trigger" data-lightbox="zara-scheda-prodotto-desktop.jpg" style="margin:0;">
+            <span class="audit-badge"><i data-lucide="monitor"></i> PDP · Desktop</span>
+            <img src="file-pf/zarahome-scheda-prodotto-desktop.png" alt="PDP prototype – desktop" />
+          </figure>
+
+          <figure class="audit-shot lightbox-trigger" data-lightbox="zara-scheda-prodotto-mobile.jpg" style="margin:0;">
+            <span class="audit-badge"><i data-lucide="smartphone"></i> PDP · Mobile</span>
+            <img src="PF/Zara Home/zarahome-prodotto1-mobile.png" alt="PDP prototype – mobile" />
+          </figure>
+        </div>
+
+        <div class="audit-notes">
+          Focus: clearer action hierarchy (“Add to cart”), explicit expand/collapse cues, and less recommendation overload.
+        </div>
+      </div>
+
+   <!-- RIGHT: PDP ANALYSIS (NO IMAGES) -->
+<div class="content-card">
+  <div class="card-title">
+    <i class="issue-icon" data-lucide="shopping-bag" color="var(--color-primary)"></i>
+    <h3>Product detail page (PDP)</h3>
+  </div>
+
+  <p class="muted">
+    The PDP preserves visual consistency across devices, but the purchase journey lacks
+    a clear behavioral hierarchy. Some friction points affect both desktop and mobile,
+    while others are device-specific.
+  </p>
+
+  <ul class="list">
+
+    <li>
+      <i class="issue-icon" data-lucide="signal-low" color="var(--color-primary)"></i>
+      <div>
+        <strong>
+          Unclear primary action
+          <span class="device-tag">Desktop</span>
+          <span class="device-tag">Mobile</span>
+        </strong>
+        Add-to-cart does not visually dominate enough to clearly signal the next step.
+      </div>
+    </li>
+
+    <li>
+      <i class="issue-icon" data-lucide="chevrons-down" color="var(--color-primary)"></i>
+      <div>
+        <strong>
+          Accordion discoverability
+          <span class="device-tag">Mobile</span>
+        </strong>
+        Expandable sections lack strong visual affordance, reducing interaction confidence.
+      </div>
+    </li>
+
+    <li>
+      <i class="issue-icon" data-lucide="sliders" color="var(--color-primary)"></i>
+      <div>
+        <strong>
+          Decision hierarchy confusion
+          <span class="device-tag">Desktop</span>
+        </strong>
+        Quantity selector sits too close to size/options, increasing the risk of perceived overlap.
+      </div>
+    </li>
+
+    <li>
+      <i class="issue-icon" data-lucide="grid-3x3" color="var(--color-primary)"></i>
+      <div>
+        <strong>
+          Recommendation overload
+          <span class="device-tag">Desktop</span>
+        </strong>
+        Large related-product grids dilute focus from the core purchasing decision.
+      </div>
+    </li>
+
+  </ul>
+
+  <div class="callout">
+    <strong style="display:block;margin-bottom:6px;">Design goal</strong>
+    <span class="muted">
+      Separate decision layers (variants vs quantity), reinforce the primary action,
+      and structure content progressively depending on device context.
+    </span>
+  </div>
+</div>
+
+    </div>
+
+  </div>
+</section>
+
+  <!-- SOLUTION -->
+  <section id="solution" class="section-padding" style="background:linear-gradient(135deg,#f5f3ff 0%,#fdf2f8 100%);">
+    <div class="container reveal">
+      <span class="tag-pill">02 Solution</span>
+      <div class="section-head">
+        <h2>Redesign strategy</h2>
+        <span class="pill"><i data-lucide="target"></i> Hierarchy + Progressive disclosure</span>
+      </div>
+
+      <p class="lead">
+        Preserve the editorial identity, but introduce a clear orientation system:
+        stronger visual hierarchy, consistent patterns across desktop/mobile, explicit interaction cues,
+        and reduced cognitive load.
+      </p>
+
+      <div class="grid-2" style="margin-top:22px;">
+        <div class="content-card">
+          <div class="card-title">
+            <i data-lucide="menu" color="var(--color-primary)"></i>
+            <h3>Navigation architecture</h3>
+          </div>
+          <p class="muted">
+            A clear multi-level structure that separates products, collections, editorial, and services,
+            improving information scent and predictability.
+          </p>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Level</th>
+                  <th>Item</th>
+                  <th>Examples</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Top</strong></td>
+                  <td>Products</td>
+                  <td>Bedroom · Decoration · Kitchen & Dining · Bathroom · Fragrance · Kids · Clothing · Laundry</td>
+                </tr>
+                <tr>
+                  <td><strong>Top</strong></td>
+                  <td>Collections</td>
+                  <td>New in · Gift ideas · Bestsellers · Seasonal</td>
+                </tr>
+                <tr>
+                  <td><strong>Top</strong></td>
+                  <td>Editorial</td>
+                  <td>A World of Wonder · Culinary Stories · Lifestyle · At Home With</td>
+                </tr>
+                <tr>
+                  <td><strong>Top</strong></td>
+                  <td>Services</td>
+                  <td>Zara Home Business · Personalization</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="callout">
+            <strong style="display:block;margin-bottom:6px;">Principles</strong>
+            <span class="muted">Consistency, recognition over recall, clear hierarchy, cognitive accessibility.</span>
+          </div>
+        </div>
+
+        <div class="content-card">
+          <div class="card-title">
+            <i data-lucide="sparkles" color="var(--color-primary)"></i>
+            <h3>Homepage: more modular, less intrusive</h3>
+          </div>
+          <p class="muted">
+            A calmer hero, clearer category entry points, and modules that communicate priority and action.
+            The experience remains editorial — but becomes navigable.
+          </p>
+
+          <ul class="list">
+            <li>
+              <i data-lucide="layout-template" color="var(--color-primary)"></i>
+              <div><strong>Modular structure:</strong> clear sections (special selection, new in, collaborations).</div>
+            </li>
+            <li>
+              <i data-lucide="eye" color="var(--color-primary)"></i>
+              <div><strong>Visible CTAs:</strong> “View all / Explore collection” with stronger affordances.</div>
+            </li>
+            <li>
+              <i data-lucide="check-circle" color="var(--color-primary)"></i>
+              <div><strong>Improved readability:</strong> better contrast and type sizing on imagery.</div>
+            </li>
+          </ul>
+
+          <div class="callout">
+            <strong style="display:block;margin-bottom:6px;">Outcome</strong>
+            <span class="muted">Clearer entry points, better scanning, reduced cognitive load.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-card" style="margin-top:18px;">
+        <div class="card-title">
+          <i data-lucide="shopping-cart" color="var(--color-primary)"></i>
+          <h3>PDP: a clearer funnel</h3>
+        </div>
+        <p class="muted">
+          Separate quantity vs variants, use explicit tabs (desktop) and accordions (mobile), and reduce recommendation overload.
+          The product stays the hero, and the action becomes obvious.
+        </p>
+
+        <div class="grid-3">
+          <div class="stat">
+            <div class="value">+</div>
+            <div class="label">Clarity</div>
+            <div class="note">Primary actions are guided by hierarchy and cues.</div>
+          </div>
+          <div class="stat">
+            <div class="value">—</div>
+            <div class="label">Overload</div>
+            <div class="note">Fewer distractions; stronger focus on purchase.</div>
+          </div>
+          <div class="stat">
+            <div class="value">↔</div>
+            <div class="label">Consistency</div>
+            <div class="note">Aligned patterns across desktop and mobile.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROTOTYPES -->
+  <section id="prototypes" class="section-padding container">
+    <div class="reveal">
+      <span class="tag-pill">03 Prototypes</span>
+      <div class="section-head">
+        <h2>Restyling (Desktop & Mobile)</h2>
+        <span class="pill"><i data-lucide="zoom-in"></i> Click to zoom</span>
+      </div>
+
+      <p class="lead">
+        Final outputs: homepage and product page. All images are clickable (zoom),
+        so the case study stays readable without losing detail.
+      </p>
+
+      <div class="proto-grid">
+
+  <figure class="proto" style="margin:0;">
+    <img src="file-pf/homepage-desktop-zara-restyling.jpg" alt="Homepage Restyling – Desktop" />
+
+    <figcaption class="proto-cap">
+      <div class="proto-top">
+        <span>Desktop</span>
+        <a href="https://www.figma.com/proto/marD4to1O3ZU72ApwnW4M8/pf?node-id=191-1894&t=Im5HPIZCYnoLsRCw-1&scaling=min-zoom&content-scaling=fixed&page-id=191%3A1893" target="_blank" class="proto-btn">
+          View prototype
+          <i data-lucide="arrow-up-right"></i>
+        </a>
+      </div>
+      <small>Clear hierarchy · Visible categories</small>
+    </figcaption>
+  </figure>
+
+  <figure class="proto" style="margin:0;">
+    <img src="file-pf/homepage-mobile-zara-restyling.jpg" alt="Homepage Restyling – Mobile" />
+
+    <figcaption class="proto-cap">
+      <div class="proto-top">
+        <span>Mobile</span>
+        <a href="https://www.figma.com/proto/marD4to1O3ZU72ApwnW4M8/pf?node-id=296-2107&t=nJdYY7p6leLG6kYr-1&scaling=min-zoom&content-scaling=fixed&page-id=296%3A627" target="_blank" class="proto-btn">
+          View prototype
+          <i data-lucide="arrow-up-right"></i>
+        </a>
+      </div>
+      <small>Clear hamburger · Accordion footer</small>
+    </figcaption>
+  </figure>
+
+</div>
+
+      <div class="proto-grid">
+
+  <figure class="proto" style="margin:0;">
+    <img src="file-pf/scheda-prodotto-desktop-zara-restyling.jpg" alt="PDP Restyling – Desktop" />
+
+    <figcaption class="proto-cap">
+      <div class="proto-top">
+        <span>Desktop</span>
+        <a href="https://www.figma.com/proto/marD4to1O3ZU72ApwnW4M8/pf?node-id=296-2337&t=YDTUTaB8ZGSUpNGD-1&scaling=min-zoom&content-scaling=fixed&page-id=296%3A628" target="_blank" class="proto-btn">
+          View prototype
+          <i data-lucide="arrow-up-right"></i>
+        </a>
+      </div>
+      <small>Clear tabs · Stronger action hierarchy</small>
+    </figcaption>
+  </figure>
+
+  <figure class="proto" style="margin:0;">
+    <img src="file-pf/scheda-prodotto-mobile-zara-restyling.jpg" alt="PDP Restyling – Mobile" />
+
+    <figcaption class="proto-cap">
+      <div class="proto-top">
+        <span>Mobile</span>
+        <a href="https://www.figma.com/proto/marD4to1O3ZU72ApwnW4M8/pf?node-id=296-2520&t=kEvhUq5uBmT0VOCf-1&scaling=scale-down-width&content-scaling=fixed&page-id=296%3A629" target="_blank" class="proto-btn">
+          View prototype
+          <i data-lucide="arrow-up-right"></i>
+        </a>
+      </div>
+      <small>Accordion · Variant/qty separation</small>
+    </figcaption>
+  </figure>
+
+</div>
+
+      <div class="content-card" style="margin-top:18px;">
+        <div class="card-title">
+          <i data-lucide="check" color="var(--color-primary)"></i>
+          <h3>Impact</h3>
+        </div>
+        <div class="grid-3">
+          <div class="stat">
+            <div class="value">✔</div>
+            <div class="label">Clearer navigation</div>
+            <div class="note">Better IA readability and predictability.</div>
+          </div>
+          <div class="stat">
+            <div class="value">✔</div>
+            <div class="label">Lower cognitive load</div>
+            <div class="note">Fewer competing elements, stronger priorities.</div>
+          </div>
+          <div class="stat">
+            <div class="value">✔</div>
+            <div class="label">Identity preserved</div>
+            <div class="note">Editorial tone remains — now more actionable.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="contact reveal">
+    <div class="container">
+      <h2>Let’s build a system that converts.</h2>
+      <p style="opacity:0.9;max-width:760px;margin:0 auto;">
+        If you want to transform a “beautiful” experience into one that truly guides users,
+        we can work together on audit, strategy, and redesign.
+      </p>
+      <div class="footer-btns">
+        <a class="btn btn-white" href="mailto:hello@saracantagallo.com"><i data-lucide="mail"></i> Email me</a>
+        <a class="btn btn-footer-outline" href="#" onclick="return false;"><i data-lucide="linkedin"></i> LinkedIn</a>
+      </div>
+      <footer style="opacity:0.7;font-size:0.9rem;margin-top:28px;">
+        &copy; 2026 — Zara Home case study · Sara Cantagallo
+      </footer>
+    </div>
+  </section>
+
+  <!-- Lightbox -->
+  <div class="lb-overlay" id="lbOverlay" aria-hidden="true">
+    <div class="lb-dialog" role="dialog" aria-modal="true" aria-label="Image preview">
+      <div class="lb-topbar">
+        <div class="lb-title" id="lbTitle">Preview</div>
+        <button class="lb-close" id="lbClose" aria-label="Close preview">
+          <i data-lucide="x" size="18"></i>
+        </button>
+      </div>
+      <div class="lb-body">
+        <img class="lb-img" id="lbImg" src="" alt="" />
+      </div>
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    // Glass nav on scroll
+    window.addEventListener('scroll', () => {
+      const nav = document.getElementById('navbar');
+      if (!nav) return;
+      if (window.scrollY > 50) nav.classList.add('scrolled');
+      else nav.classList.remove('scrolled');
+    });
+
+    // Reveal on scroll
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('active');
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // Mobile menu toggle
+    const navContent = document.getElementById('navbar');
+    const navToggle = document.getElementById('navToggle');
+
+    function openMobileMenu(){
+      if (!navContent) return;
+      navContent.classList.add('open');
+      navToggle?.setAttribute('aria-expanded','true');
+      lucide.createIcons();
+    }
+    function closeMobileMenu(){
+      if (!navContent) return;
+      navContent.classList.remove('open');
+      navToggle?.setAttribute('aria-expanded','false');
+      lucide.createIcons();
+    }
+    function toggleMobileMenu(){
+      if (!navContent) return;
+      navContent.classList.contains('open') ? closeMobileMenu() : openMobileMenu();
+    }
+
+    if (navToggle){
+      navToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleMobileMenu();
+      });
+    }
+
+    document.addEventListener('click', (e) => {
+      if (!navContent?.classList.contains('open')) return;
+      const insideNav = e.target.closest('#navbar');
+      if (!insideNav) closeMobileMenu();
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!navContent?.classList.contains('open')) return;
+      const link = e.target.closest('.mobile-menu a');
+      if (link) closeMobileMenu();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && navContent?.classList.contains('open')) closeMobileMenu();
+    });
+
+    // Lightbox
+    document.addEventListener('DOMContentLoaded', () => {
+      const overlay = document.getElementById('lbOverlay');
+      const imgEl = document.getElementById('lbImg');
+      const titleEl = document.getElementById('lbTitle');
+      const closeBtn = document.getElementById('lbClose');
+
+      if (!overlay || !imgEl) return;
+
+      function openLightbox(src, title, alt){
+        if (!src) return;
+        imgEl.src = src;
+        imgEl.alt = alt || title || 'Preview image';
+        if (titleEl) titleEl.textContent = title || 'Preview';
+        overlay.classList.add('is-open');
+        overlay.setAttribute('aria-hidden','false');
+        document.body.style.overflow = 'hidden';
+        if (window.lucide?.createIcons) window.lucide.createIcons();
+      }
+
+      function closeLightbox(){
+        overlay.classList.remove('is-open');
+        overlay.setAttribute('aria-hidden','true');
+        document.body.style.overflow = '';
+        imgEl.src = '';
+      }
+
+      // ✅ NEW: robust resolver (fixes "broken images" without changing HTML)
+      function resolveImageFromTrigger(trigger){
+        if (!trigger) return null;
+        if (trigger.tagName === 'IMG') return trigger;
+        return trigger.querySelector('img') || null;
+      }
+
+      function resolveLightboxSrc(trigger){
+        const val = trigger.getAttribute('data-lightbox');
+
+        const img = resolveImageFromTrigger(trigger);
+        const imgSrc = img?.getAttribute('src') || '';
+
+        // If no data-lightbox OR data-lightbox="self": use the actual img src
+        if (!val || val === 'self') return imgSrc;
+
+        // If val looks like a real path or URL, use it
+        const looksLikePathOrUrl =
+          /^(https?:)?\/\//i.test(val) || // http(s) or protocol-relative
+          val.startsWith('/') ||
+          val.includes('/') ||
+          val.includes('.') && (val.includes('img') || val.includes('file') || val.includes('PF'));
+
+        // Special-case: if val is just a filename (no slash), prefer the actual <img src>
+        // because your HTML often has data-lightbox="filename.png" but real src="folder/file.png".
+        const isJustFilename = !val.includes('/') && !/^(https?:)?\/\//i.test(val);
+
+        if (isJustFilename && imgSrc) return imgSrc;
+        if (looksLikePathOrUrl) return val;
+
+        // fallback
+        return imgSrc || val;
+      }
+
+      function resolveTitleAndAlt(trigger){
+        const img = resolveImageFromTrigger(trigger);
+        const alt = img?.getAttribute('alt') || trigger.getAttribute('alt') || '';
+        const title = trigger.getAttribute('data-title') || alt || 'Preview';
+        return { title, alt };
+      }
+
+     document.addEventListener('click', (e) => {
+  // ✅ Non aprire lightbox se clicchi il bottone "View prototype"
+  if (e.target.closest('.proto-btn')) return;
+
+  // ✅ Aggiunto .proto come trigger, così le ultime 4 immagini funzionano
+  const trigger = e.target.closest('[data-lightbox], .lightbox-trigger, .proto');
+  if (!trigger) return;
+
+  const srcRaw = resolveLightboxSrc(trigger);
+  if (!srcRaw) return;
+
+  let src = srcRaw;
+  try { src = new URL(srcRaw, document.baseURI).href; } catch (_) {}
+
+  const { title, alt } = resolveTitleAndAlt(trigger);
+  openLightbox(src, title, alt);
+});
+
+
+      closeBtn?.addEventListener('click', closeLightbox);
+
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) closeLightbox();
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && overlay.classList.contains('is-open')) closeLightbox();
+      });
+    });
+  </script>
+</body>
+</html>
