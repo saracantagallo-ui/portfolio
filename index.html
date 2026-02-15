@@ -381,6 +381,11 @@
     padding-right: 10px !important;
   }
 }
+.about-buttons {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
 
     </style>
 </head>
@@ -556,11 +561,15 @@
                     <span><strong>Recognition:</strong> A deep-dive article I authored for my agency was recognized by a <strong>Canva Ambassador</strong>, leading to an official partnership and a premium platform sponsorship for the firm.</span>
                 </div>
 
-                <div class="about-buttons">
-                    <!-- ✅ Removed: View My Story -->
-                    <!-- ✅ Resume now uses the same style as the removed button (btn-black), keeping the icon -->
-                    <button class="btn btn-black"><i data-lucide="download"></i> Resume</button>
-                </div>
+               <a
+  href="img/sara-cantagallo-resume.pdf"
+  download
+  class="btn btn-black about-buttons"
+>
+  <i data-lucide="download"></i>
+  Resume
+</a>
+
             </div>
         </div>
     </section>
