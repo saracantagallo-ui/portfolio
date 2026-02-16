@@ -678,8 +678,6 @@ nav { position: fixed; top: 20px; left: 0; right: 0; }
   box-sizing: border-box;
 }
 
-/* (opzionale ma consigliato) evita che un transform sul parent alteri calcoli */
-.nav-content{ transform: none; }
 
 :root{
   --font-display:'Outfit',sans-serif;
@@ -723,16 +721,12 @@ img,svg,video{max-width:100%;height:auto;display:block;}
 /* ===========================
    GLOBAL SPACING
 =========================== */
-section{
-  padding-left:10px;
-  padding-right:10px;
-}
+
 
 .container{
   max-width:1200px;
   margin:0 auto;
-  padding-left:10px;
-  padding-right:10px;
+
 }
 
 /* ===========================
@@ -959,6 +953,48 @@ nav{
     letter-spacing:-1px;
   }
 }
+
+/* ===========================
+   MOBILE FIX (ONLY)
+   - content not too left
+   - 10px side padding on every section
+=========================== */
+@media (max-width:768px){
+
+  /* 10px “gutter” su ogni sezione */
+  section{
+    padding-left:10px;
+    padding-right:10px;
+  }
+
+  /* container coerente con il gutter (override del tuo 0 16px) */
+  .container{
+    padding-left:10px !important;
+    padding-right:10px !important;
+  }
+
+  /* nav: mantieni centratura e allineamento corretti su mobile */
+  nav{
+    padding:0 10px; /* invece di 12px, così torna coerente col gutter */
+  }
+
+  .mobile-menu{
+    left:50% !important;
+    right:auto !important;
+    transform:translateX(-50%) !important;
+
+    /* largo quanto la viewport meno i padding del nav */
+    width:calc(100vw - 20px) !important;
+    max-width:1000px !important;
+    box-sizing:border-box;
+  }
+
+  /* evita che qualche elemento “stiri” la pagina verso sinistra */
+  .hero-grid, .grid-2, .grid-3, .framework-grid, .proto-grid{
+    width:100%;
+  }
+}
+
   </style>
 </head>
 
