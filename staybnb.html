@@ -578,6 +578,17 @@
         transition:transform .25s var(--ease-spring);
       }
     }
+
+    .hero{
+  overflow-x: clip;   /* moderno */
+  overflow-y: visible;
+}
+
+/* fallback per browser che non supportano clip */
+@supports not (overflow: clip){
+  .hero{ overflow-x: hidden; }
+}
+
   </style>
 </head>
 
