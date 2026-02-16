@@ -43,7 +43,7 @@
       background:var(--color-bg);
       color:var(--color-text-main);
       line-height:1.6;
-      overflow-x:hidden;
+      overflow-x:hidden; /* ok, ma ora non avremo più micro-overflow da vw */
     }
     h1,h2,h3,h4{font-family:var(--font-display);line-height:1.1;}
     a{text-decoration:none;color:inherit;}
@@ -148,14 +148,17 @@
     }
     .nav-toggle svg{width:22px;height:22px;color:#000;}
 
+    /* ✅ FIX: niente 100vw e niente translateX(-50%).
+       Il menu usa la stessa larghezza della nav-content e resta centrato senza generare overflow. */
     .mobile-menu{
       display:none;
       position:absolute;
       top:calc(100% + 10px);
-      left:50%;
-      transform:translateX(-50%);
-      width:calc(100vw - 24px);
-      max-width:1000px;
+      left:0;
+      right:0;
+      transform:none;
+      width:100%;
+      max-width:100%;
       background:rgba(255,255,255,0.85);
       backdrop-filter:blur(10px);
       -webkit-backdrop-filter:blur(10px);
@@ -491,8 +494,11 @@
       padding:24px;
     }
     .lb-overlay.is-open{display:flex;}
+
+    /* ✅ FIX: niente vw (evita micro overflow e shift su mobile).
+       Usa la larghezza disponibile meno il padding dell'overlay. */
     .lb-dialog{
-      width:min(1100px, 96vw);
+      width:min(1100px, calc(100% - 48px));
       max-height:92vh;
       background:rgba(255,255,255,0.06);
       border:1px solid rgba(255,255,255,0.18);
@@ -541,6 +547,7 @@
     }
     @media (max-width:768px){
       .container{padding:0 16px;}
+      nav{padding:0 16px;} /* ✅ allinea nav agli stessi gutter del container */
       .nav-links{display:none;}
       .nav-toggle{display:inline-flex;}
       .nav-content{padding:8px 12px;max-width:980px;}
@@ -849,13 +856,11 @@
       </p>
 
       <div class="proto-grid">
-        <!-- ✅ Replace src + data-lightbox with your real image paths -->
         <figure class="proto lightbox-trigger" data-lightbox="img/Staybnb1.png" data-title="Staybnb · Homepage" style="margin:0;">
           <img src="img/Staybnb1.png" alt="Staybnb – Homepage" />
           <figcaption class="proto-cap">
             <div class="proto-top">
               <span>Homepage</span>
-              <!-- Optional: link to live page -->
               <a class="proto-btn" href="staybnb/index.html" target="_blank">
                 Live demo <i data-lucide="arrow-up-right"></i>
               </a>
@@ -1067,7 +1072,6 @@
       }
 
       document.addEventListener('click', (e) => {
-        // Do not open lightbox when clicking prototype links
         if (e.target.closest('.proto-btn')) return;
 
         const trigger = e.target.closest('[data-lightbox], .lightbox-trigger, .visual-inner, .proto');
